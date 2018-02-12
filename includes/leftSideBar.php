@@ -43,6 +43,12 @@
                 <p>Invitation Sent</p>
             </a>
         </li>
+        <li <?php if(basename($_SERVER['PHP_SELF'])=='chat.php') echo"class='active'";?>>
+            <a href="chat.php">
+                <i class="pe-7s-note2"></i>
+                <p>Chat</p>
+            </a>
+        </li>
 
 
     </ul>
