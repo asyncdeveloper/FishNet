@@ -1,8 +1,9 @@
 <?php
 require_once "includes/database.php";
-if(!empty($_POST['id'])){
-    $id = $_POST['id'];
-    $userInfo = mysqli_fetch_assoc(mysqli_query($connection,"SELECT * FROM users WHERE id='$id'"));
-
-    echo json_encode($userInfo);
+if(!empty($_POST) && sizeof($_POST)==3){
+    $message    = $_POST['body'];
+    $sender     = $_POST['sender_id'];
+    $receiver   = $_POST['receiver_id'];
+    if(mysqli_query($connection,"INSERT INTO messages (message,sender,receiver) VALUES('$message','$sender','$receiver')"))
+        echo 1;
 }

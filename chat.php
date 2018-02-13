@@ -23,16 +23,15 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 
 ?>
 <script src="assets/js/jquery.3.2.1.min.js"></script>
-<script>
-    function disabledEventPropagation(event) {
-        if (event.stopPropagation){
-            event.stopPropagation();
-        }
-        else if(window.event){
-            window.event.cancelBubble=true;
-        }
+<script src="assets/js/bootstrap.min.js"></script>
+<style>
+    .myicon{
+        position: relative !important;
+        bottom: 33px !important;
+        left: 80px !important;
+        height: 10px !important;
     }
-</script>
+</style>
 <body>
 
 <div id="frame">
@@ -57,7 +56,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         </div>
         <div id="search">
             <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-            <input type="text" placeholder="Search contacts..." />
+            <input  type="text" placeholder="Search contacts..." disabled />
         </div>
         <div id="contacts">
             <?php if($numberOfContacts>0): ?>
@@ -83,6 +82,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                                         <?=($user['about_me']) ? substr($user['about_me'],0,10) :" . . . "?>
                                     </p>
                                 </div>
+
                             </div>
                         </li>
                     <?php endwhile; ?>
@@ -95,64 +95,142 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         </div>
     </div>
     <div class="content">
-        <div class="contact-profile" id="headtop">
+        <div class="contact-profile">
+            <span class="contact-status busy"></span>
             <img src="" alt="" id="user-image" />
             <p id="user-full-name"></p>
-
+            <input type="hidden" id="receiver_id" value="">
         </div>
         <div class="messages">
-            <ul>
-                <!--<li class="sent">
-                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                    <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>When you're backed against the wall, break the god damn thing down.</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>Excuses don't win championships.</p>
-                </li>
-                <li class="sent">
-                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                    <p>Oh yeah, did Michael Jordan tell you that?</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>No, I told him that.</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>What are your choices when someone puts a gun to your head?</p>
-                </li>
-                <li class="sent">
-                    <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-                    <p>What are you talking about? You do what they say or they shoot you.</p>
-                </li>
-                <li class="replies">
-                    <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                    <p>Wrong. You take the gun, or you pull out a bigger one. Or, you call their bluff. Or, you do any one of a hundred and forty six other things.</p>
-                </li>-->
+            <ul id="messages-list">
             </ul>
         </div>
         <div class="message-input">
             <div class="wrap">
-                <input type="text" placeholder="Write your message..." />
+                <input id="input-msg" type="text" placeholder="Write your message..." disabled />
                 <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
                 <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
             </div>
         </div>
     </div>
 </div>
-<script src="assets/js/jquery.3.2.1.min.js"></script>
-<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+<script>
+    window.setInterval(function(){
+        var currentUser = $('#receiver_id').val();
+        if(currentUser){
+            console.log("Chose ");
+        }
+    }, 100);
+    function newMessage() {
+        message = $(".message-input input").val();
+        if($.trim(message) == '') {
+            return false;
+        }
+        imageSrc = $('#user-image').attr('src');
+        $('<li class="sent"><img src='+imageSrc+' alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+        $('.message-input input').val(null);
+        $('.contact.active .preview').html('<span>You: </span>' + message);
+        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+        var sender_id    =   '<?=$_SESSION['id']?>';
+        var receiver_id  =   $('#receiver_id').val();
+        //Save to db
+        $.ajax({
+            type: "POST",
+            url: "saveUserMessages.php",
+            data:
+                {
+                    sender_id   : sender_id,
+                    receiver_id : receiver_id,
+                    body        : message
+                },
+            success: function (message) {
+                //updateUI(message);
+            },
+            error: function () {
+            }
+        });
+    }
+    function showMsg(id) {
+        $('#messages-list').empty();
+        $('#input-msg').prop('disabled',false);
+        $.ajax({
+            type: "POST",
+            url: "getUserInfo.php",
+            data: {id : id},
+            success: function (message) {
+                updateUI(message);
+            },
+            error: function () {
+            }
+        });
+    }
+    function updateUI(data) {
+        data =JSON.parse(data);
+        $('#receiver_id').val(data.id);
+        var onlineStatus;
+        if (data.image) {
+            onlineStatus = '<span class=\'contact-status busy\'></span>';
+            //$('#headtop').append(onlineStatus);
+            $("#user-image").attr("src", data.image);
+        } else {
+            onlineStatus = '<span class=\'contact-status busy\'></span>';
+            //$('#headtop').appendChild(onlineStatus);
+            $("#user-image").attr("src", "assets/img/defaultAvatar.png");
+        }
+        if(data.first_name || data.last_name){
+            $("#user-full-name").html(data.last_name +" " +data.first_name);
+        }else{
+            $("#user-full-name").html(data.username);
+        }
+        getAllMessages(data.id);
+    }
+    function getAllMessages(id) {
+        $.ajax({
+            type: "POST",
+            url: "getUserMessages.php",
+            data: {id : id},
+            success: function (response) {
+                response =JSON.parse(response);
+                var len = response.length;
+                var loggedInUser  = parseInt('<?=$_SESSION['id']?>');
+                $("#messages-list").empty();
+                for( var i = 0; i<len; i++){
+                    var sender = parseInt(response[i]['sender']);
+                    var msg    = response[i]['message'];
+                    var message; var imageSrc;var imageMarkUp;
+                    if(sender===loggedInUser){
+                        imageSrc= $('#profile-img').attr('src');
+                        imageMarkUp ='<img src='+imageSrc+' alt="" />';
+                        message = '<li class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+                    }else{
+                        imageSrc= $('#user-image').attr('src');
+                        imageMarkUp ='<img src='+imageSrc+' alt="" />';
+                        message = '<li class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+                    }
+                    $("#messages-list").append(message);
+                }
+            },
+            error: function () {
+            }
+        });
+    }
 
-<script >$(".messages").animate({ scrollTop: $(document).height() }, "fast");
+    $('.submit').click(function() {
+        newMessage();
+    });
 
-     $("#profile-img").click(function() {
-         $("#status-options").toggleClass("active");
-     });
+    $(window).on('keydown', function(e) {
+        if (e.which == 13) {
+            newMessage();
+            return false;
+        }
+    });
+
+    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+
+    $("#profile-img").click(function() {
+        $("#status-options").toggleClass("active");
+    });
 
     $(".expand-button").click(function() {
         $("#profile").toggleClass("expanded");
@@ -177,77 +255,10 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             $("#profile-img").addClass("offline");
         } else {
             $("#profile-img").removeClass();
-        };
+        }
 
         $("#status-options").removeClass("active");
     });
-
-    function newMessage() {
-        message = $(".message-input input").val();
-        if($.trim(message) == '') {
-            return false;
-        }
-        //$imgsrc=$('.img1 img').attr('src');
-        imageSrc = $('#user-image').attr('src');
-        $('<li class="sent"><img src='+imageSrc+' alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
-        $('.message-input input').val(null);
-        $('.contact.active .preview').html('<span>You: </span>' + message);
-        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-        //Save to db
-        $.ajax({
-            type: "POST",
-            url: "saveUserMessages.php",
-            data: {id : id},
-            success: function (message) {
-                updateUI(message);
-            },
-            error: function () {
-            }
-        });
-    }
-
-    $('.submit').click(function() {
-        newMessage();
-    });
-
-    $(window).on('keydown', function(e) {
-        if (e.which == 13) {
-            newMessage();
-            return false;
-        }
-    });
-
-    function showMsg(id) {
-        $.ajax({
-            type: "POST",
-            url: "getUserMessages.php",
-            data: {id : id},
-            success: function (message) {
-                updateUI(message);
-            },
-            error: function () {
-            }
-        });
-    }
-    function updateUI(data) {
-        data =JSON.parse(data);
-        var onlineStatus;
-        if (data.image) {
-            onlineStatus = '<span class=\'contact-status busy\'></span>';
-            //$('#headtop').append(onlineStatus);
-            $("#user-image").attr("src", data.image);
-        } else {
-            onlineStatus = '<span class=\'contact-status busy\'></span>';
-            //$('#headtop').appendChild(onlineStatus);
-            $("#user-image").attr("src", "assets/img/defaultAvatar.png");
-        }
-        if(data.first_name || data.last_name){
-            $("#user-full-name").html(data.last_name +" " +data.first_name);
-        }else{
-            $("#user-full-name").html(data.username);
-        }
-    }
-
 
 </script>
 </body>
