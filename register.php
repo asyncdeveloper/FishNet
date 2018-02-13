@@ -68,7 +68,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Email</label>
-                                                <input type="email" class="form-control" placeholder="Researcher" name="email" required minlength="6" />
+                                                <input type="email" class="form-control" placeholder="Researcher" name="email" required minlength="6" id="email" />
                                             </div>
                                         </div>
                                     </div>
@@ -76,7 +76,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Username</label>
-                                                <input type="text" class="form-control" placeholder="Username" name="username" minlength="6" />
+                                                <input type="text" class="form-control" placeholder="Username" name="username" minlength="6"  id="uname" />
                                             </div>
                                         </div>
                                     </div>
@@ -85,7 +85,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Password</label>
-                                                <input type="password" class="form-control" name="password" required minlength="6"/>
+                                                <input type="password" class="form-control" name="password" required minlength="6" id="password" />
                                             </div>
                                         </div>
                                     </div>
@@ -94,7 +94,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Confirm Password</label>
-                                                <input type="password" class="form-control" name="cpassword" required minlength="6"/>
+                                                <input type="password" class="form-control" name="cpassword" required minlength="6" id="cpassword" />
                                             </div>
                                         </div>
                                     </div>
@@ -112,8 +112,7 @@ if(isset($_POST['submit'])){
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <button type="submit" name="submit" class="btn btn-info btn-fill">Register
-                                        </button>
+                                        <input type="submit" name="submit" class="btn btn-info btn-fill" onclick="validateSubmit()" value="Register">
                                     </div>
 
                                     <div class="clearfix"></div>

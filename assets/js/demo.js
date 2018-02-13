@@ -261,3 +261,38 @@ demo = {
 
 
 }
+/*==============================================================================================================
+my validation
+================================================================================================================*/
+function validateSubmit() {
+    var uname = $('#uname');
+    var email = $('#email');
+    var password = $('#password');
+    var cpassword = $('#cpassword')
+    if ((uname.val() === '') || (email.val() === '') || (password.val() === '') || (cpassword.val() === '')) {
+           $('#uname').addClass('form-error animated shake')
+                     .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                           $(this).removeClass('animated shake');
+           });
+           $('#email').addClass('form-error animated shake')
+                      .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                           $(this).removeClass('animated shake');
+           });
+          $('#cpassword').addClass('form-error animated shake')
+                     .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                           $(this).removeClass('animated shake');
+           });
+          $('#password').addClass('form-error animated shake')
+                     .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                           $(this).removeClass('animated shake');
+           });
+                     return false;
+       } else {
+           $('#uname').removeClass('form-error');
+            $('#email').removeClass('form-error');
+            $('#password').removeClass('form-error');
+            $('#cpassword').removeClass('form-error');
+            return true;
+
+       }
+}
