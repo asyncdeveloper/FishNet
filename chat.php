@@ -22,16 +22,10 @@ $contactsResult = mysqli_query($connection,"SELECT * FROM invites WHERE status='
 $numberOfContacts = mysqli_num_rows($contactsResult);
 
 ?>
+
 <script src="assets/js/jquery.3.2.1.min.js"></script>
+<script src="assets/js/timeago.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
-<style>
-    .myicon{
-        position: relative !important;
-        bottom: 33px !important;
-        left: 80px !important;
-        height: 10px !important;
-    }
-</style>
 <body>
 
 <div id="frame">
@@ -68,9 +62,19 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                             $contactId = $contact['sender_id'];
                         $user = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users where id='{$contactId}'"));
                         ?>
-                        <li class="contact" onclick="showMsg(<?=$user['id']?>)">
+                        <li class="contact" onclick="showMsg(<?=$user['id']?>)" id="<?=$user['id']?>">
                             <div class="wrap">
-                                <span class="contact-status busy"></span>
+                                <?php
+                                    $lastLogin = $user['last_login'];
+                                    $currentTime = date('Y-m-d h:i:s', time());
+                                    $diffInSeconds = strtotime($currentTime) - strtotime($lastLogin);
+                                        if($diffInSeconds>60):
+                                    ?>
+                                    <span id="span<?=$user['id']?>" class="contact-status offline"></span>
+                                <?php else: ?>
+                                    <span class="contact-status online"></span>
+                                <?php endif; ?>
+
                                 <?php if($user['image']): ?>
                                     <img id="profile-img" src="<?=$user['image']?>" class="online" alt="" />
                                 <?php else: ?>
@@ -95,10 +99,11 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         </div>
     </div>
     <div class="content">
-        <div class="contact-profile">
+        <div class="contact-profile" id="header-user-info">
             <span class="contact-status busy"></span>
             <img src="" alt="" id="user-image" />
             <p id="user-full-name"></p>
+            <span id="last-seen" style="padding-left: 10px;font-size: 12px;font-style: italic;display: none;"></span>
             <input type="hidden" id="receiver_id" value="">
         </div>
         <div class="messages">
@@ -115,12 +120,50 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     </div>
 </div>
 <script>
-    window.setInterval(function(){
+    /*window.setInterval(function(){
         var currentUser = $('#receiver_id').val();
         if(currentUser){
-            console.log("Chose ");
+          //  console.log("Chose ");
         }
-    }, 100);
+    }, 100);*/
+    $(document).ready(function() {
+        window.setInterval('updateSideBarInfo()', 10000);
+    });
+
+    function updateSideBarInfo(){
+        //Loop through side bar users and update online status
+        var listItems = $("#test li");
+        listItems.each(function(idx, li) {
+            var liUser = $(li);
+            var liUserId = liUser.attr("id");
+            $.ajax({
+                url: 'getOnlineStatus.php',
+                type: 'post',
+                data: {id: liUserId},
+                dataType: 'json',
+                success: function (response) {
+                    updateSideBarIcon(response,liUserId);
+                }
+            });
+        });
+
+    }
+    function updateSideBarIcon(data,id) {
+        data = parseInt(data);
+        if(data===0){
+            //Set to offline
+            idName = 'span'+id;
+            icon = $("body").find('#' + idName);
+            icon.removeClass("online");
+            icon.addClass("offline");
+        }else{
+            //Set to online
+            idName = 'span'+id;
+            icon = $("body").find('#' + idName);
+            icon.removeClass("offline");
+            icon.addClass("online");
+        }
+    }
     function newMessage() {
         message = $(".message-input input").val();
         if($.trim(message) == '') {
@@ -165,22 +208,47 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         });
     }
     function updateUI(data) {
+        $("#last-seen").hide();
         data =JSON.parse(data);
+
         $('#receiver_id').val(data.id);
-        var onlineStatus;
+
         if (data.image) {
-            onlineStatus = '<span class=\'contact-status busy\'></span>';
-            //$('#headtop').append(onlineStatus);
             $("#user-image").attr("src", data.image);
         } else {
-            onlineStatus = '<span class=\'contact-status busy\'></span>';
-            //$('#headtop').appendChild(onlineStatus);
             $("#user-image").attr("src", "assets/img/defaultAvatar.png");
         }
         if(data.first_name || data.last_name){
             $("#user-full-name").html(data.last_name +" " +data.first_name);
         }else{
             $("#user-full-name").html(data.username);
+        }
+
+        var userLastLogin = data.last_login;
+        var d2 = new Date();
+        var d1 = new Date(userLastLogin);
+        var seconds =  parseInt((d2- d1)/1000);
+
+        //If use last seen greater than a minute set to offline
+        var  idName;
+
+        function lastSeenText(seconds,d1) {
+             return jQuery.timeago(d1);
+        }
+        if(seconds>60){
+            //Set to offline
+            idName = 'span'+data.id;
+            icon = $("body").find('#' + idName);
+            icon.removeClass("online");
+            icon.addClass("offline");
+            $("#last-seen").text(lastSeenText(seconds,d1));
+            $("#last-seen").show();
+        }else{
+            //Set to online
+            idName = 'span'+data.id;
+            icon = $("body").find('#' + idName);
+            icon.removeClass("offline");
+            icon.addClass("online");
         }
         getAllMessages(data.id);
     }

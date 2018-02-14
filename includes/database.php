@@ -8,7 +8,8 @@ $connection = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME) or die("Error
 session_start();
 if(isset($_SESSION['id'])){
     if(intval($_SESSION['id'])){
-        //Update Last login
         mysqli_query($connection,"UPDATE users SET last_login=NOW() WHERE id='{$_SESSION['id']}' ");
     }
 }
+?>
+
