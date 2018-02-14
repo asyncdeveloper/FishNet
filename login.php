@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-<?php require_once "includes/database.php";
+<?php
+require_once "includes/database.php";
 
 if(isset($_POST['submit'])){
     $usernameOrEmail = $_POST['username'];
@@ -20,15 +21,16 @@ if(isset($_POST['submit'])){
 <body>
 
 <div class="wrapper">
-    <div class="main-panel">
+    <div>
 
         <?php require_once "includes/header.php"; ?>
 
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-8">
-                        <div class="card">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <div class="card shadowed" id="centered">
                             <div class="header">
                                 <h4 class="title text-center">Login</h4>
                             </div>
@@ -57,7 +59,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Email/Username</label>
-                                                <input type="text" class="form-control" placeholder="Researcher" name="username">
+                                                <input type="text" class="form-control" placeholder="Email/Username" name="username">
                                             </div>
                                         </div>
                                     </div>
@@ -65,7 +67,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Password</label>
-                                                <input type="password" class="form-control" name="password" >
+                                                <input type="password" class="form-control" name="password" placeholder="Password" >
                                             </div>
                                         </div>
                                     </div>
@@ -80,6 +82,7 @@ if(isset($_POST['submit'])){
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4"></div>
 
                 </div>
             </div>

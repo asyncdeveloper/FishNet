@@ -28,4 +28,17 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+    <style>
+        .shadowed{
+            box-shadow: 7px 7px 9px #A9A9A9;
+        }
+        .footer{
+            position: fixed;
+            bottom: 0;
+            width: 100vw !important;
+        }
+        #centered{
+            margin-top: calc(100% - 300px);
+        }
+    </style>
 </head>

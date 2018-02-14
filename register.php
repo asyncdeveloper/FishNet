@@ -30,15 +30,17 @@ if(isset($_POST['submit'])){
 <body>
 
 <div class="wrapper">
-    <div class="main-panel">
+    <div >
+
 
         <?php require_once "includes/header.php"; ?>
 
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-8">
-                        <div class="card">
+                	<div class="col-md-2"></div>
+                    <div class="col-md-8" >
+                        <div class="card shadowed">
                             <div class="header">
                                 <h4 class="title text-center">Register on FishFarm </h4>
                             </div>
@@ -85,7 +87,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Password</label>
-                                                <input type="password" class="form-control" name="password" required minlength="6" id="password" />
+                                                <input type="password" class="form-control" name="password" required minlength="6" id="password" placeholder="Password" />
                                             </div>
                                         </div>
                                     </div>
@@ -94,7 +96,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Confirm Password</label>
-                                                <input type="password" class="form-control" name="cpassword" required minlength="6" id="cpassword" />
+                                                <input type="password" class="form-control" name="cpassword" required minlength="6" id="cpassword" placeholder="Confirm Password" />
                                             </div>
                                         </div>
                                     </div>
@@ -120,6 +122,7 @@ if(isset($_POST['submit'])){
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-2"></div>
 
                 </div>
             </div>
