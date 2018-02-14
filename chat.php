@@ -207,6 +207,9 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             }
         });
     }
+    function lastSeenText(seconds,d1) {
+        return jQuery.timeago(d1);
+    }
     function updateUI(data) {
         $("#last-seen").hide();
         data =JSON.parse(data);
@@ -228,13 +231,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         var d2 = new Date();
         var d1 = new Date(userLastLogin);
         var seconds =  parseInt((d2- d1)/1000);
-
         //If use last seen greater than a minute set to offline
         var  idName;
-
-        function lastSeenText(seconds,d1) {
-             return jQuery.timeago(d1);
-        }
         if(seconds>60){
             //Set to offline
             idName = 'span'+data.id;
