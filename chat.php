@@ -127,7 +127,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         }
     }, 100);*/
     $(document).ready(function() {
-        window.setInterval('updateSideBarInfo()', 10000);
+        window.setInterval('updateSideBarInfo()', 60000);
     });
 
     function updateSideBarInfo(){
@@ -213,9 +213,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     function updateUI(data) {
         $("#last-seen").hide();
         data =JSON.parse(data);
-
         $('#receiver_id').val(data.id);
-
         if (data.image) {
             $("#user-image").attr("src", data.image);
         } else {
@@ -226,7 +224,6 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         }else{
             $("#user-full-name").html(data.username);
         }
-
         var userLastLogin = data.last_login;
         var d2 = new Date();
         var d1 = new Date(userLastLogin);
