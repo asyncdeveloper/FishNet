@@ -143,7 +143,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         }
     }, 100);*/
     $(document).ready(function() {
-        window.setInterval('updateSideBarInfo()', 5000);
+        //Update every 30 seconds
+        window.setInterval('updateSideBarInfo()', 30000);
     });
 
     function updateSideBarInfo(){
