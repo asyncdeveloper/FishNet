@@ -9,20 +9,16 @@ if(!empty($_POST)){
     $datetime1 = new DateTime($currentTime);
     $datetime2 = new DateTime($lastLogin);
     $interval = $datetime1->diff($datetime2);
-
-    if($interval->format('%h') > 0){
-        //More dan an hr
-        $hrs  = $interval->format('%i');
-        $mins = $interval->format('%h');
-        echo "0";
-
+    $hrs  = (int) $interval->format('%i');
+    $mins = (int)$interval->format('%h');
+    if($mins == 0 && $hrs==0){
+        echo "1";
     }else{
-        //Less than hr
-        $hrs  = $interval->format('%i');
-        $mins = $interval->format('%h');
         if($mins>2  || $hrs>0)
             echo "0";
         else
             echo "1";
     }
+
+    exit();
 }

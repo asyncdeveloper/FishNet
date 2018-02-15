@@ -65,31 +65,27 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                         <li class="contact" onclick="showMsg(<?=$user['id']?>)" id="<?=$user['id']?>">
                             <div class="wrap">
                                 <?php
-                                $lastLogin = $user['last_login'];
-                                $currentTime = date('Y-m-d H:i:s', time());
-                                $datetime1 = new DateTime($currentTime);
-                                $datetime2 = new DateTime($lastLogin);
-                                $interval = $datetime1->diff($datetime2);
-                                $status;
-                                if($interval->format('%h') > 0){
-                                    //More dan an hr
-                                    $hrs  = $interval->format('%i');
-                                    $mins = $interval->format('%h');
-                                    $status = 0;
-                                }else{
-                                    //Less than hr
-                                    $hrs  = $interval->format('%i');
-                                    $mins = $interval->format('%h');
-                                    if($mins>2  || $hrs>0)
-                                        $status = 0;
-                                    else
-                                        $status = 1;
-                                }
+                                    $lastLogin = $user['last_login'];
+                                    $currentTime = date('Y-m-d H:i:s', time());
+                                    $datetime1 = new DateTime($currentTime);
+                                    $datetime2 = new DateTime($lastLogin);
+                                    $interval = $datetime1->diff($datetime2);
+                                    $status;
+                                    $hrs  = (int) $interval->format('%i');
+                                    $mins = (int)$interval->format('%h');
+                                    if($mins == 0 && $hrs==0){
+                                        $status =1 ;
+                                    }else{
+                                        if($mins>2  || $hrs>0)
+                                            $status = 0 ;
+                                        else
+                                            $status = 1 ;
+                                    }
                                         if(!$status):
                                     ?>
                                     <span id="span<?=$user['id']?>" class="contact-status offline"></span>
                                 <?php else: ?>
-                                    <span class="contact-status online"></span>
+                                    <span id="span<?=$user['id']?>" class="contact-status online"></span>
                                 <?php endif; ?>
                                 <?php if($user['image']): ?>
                                     <img id="profile-img" src="<?=$user['image']?>" class="online" alt="" />
@@ -136,6 +132,23 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     </div>
 </div>
 <script>
+    function formatDate(date) {
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+
+        var day = date.getDate();
+        var monthIndex = date.getMonth();
+        var year = date.getFullYear();
+
+        return day + ' ' + monthNames[monthIndex] + ' ' + year;
+    }
+
+
+
     function updateMessageUI(response) {
         var len = response.length;
         var loggedInUser  = parseInt('<?=$_SESSION['id']?>');
@@ -143,15 +156,17 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             var id     = parseInt(response[i]['id']);
             var sender = parseInt(response[i]['sender']);
             var msg    = response[i]['message'];
+            var time   = response[i]['timeSent'];
+            var title  = formatDate(new Date(time));
             var message; var imageSrc;var imageMarkUp;
             if(sender===loggedInUser){
                 imageSrc= $('#profile-img').attr('src');
                 imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+                message = '<li title="'+title+'" id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
             }else{
                 imageSrc= $('#user-image').attr('src');
                 imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+                message = '<li title="'+title+'"  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
             }
             $("#messages-list").append(message);
         }
@@ -286,8 +301,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         var d1 = new Date(userLastLogin);
         var seconds =  parseInt((d2- d1)/1000);
         //If use last seen greater than a minute set to offline
-        var  idName;
-        if(seconds>60){
+        var isOnline = parseInt(data.isActive);
+        if(!isOnline){
             //Set to offline
             idName = 'span'+data.id;
             icon = $("body").find('#' + idName);
@@ -301,6 +316,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             icon = $("body").find('#' + idName);
             icon.removeClass("offline");
             icon.addClass("online");
+            $("#last-seen").text("Online");
+            $("#last-seen").show();
         }
         getAllMessages(data.id);
     }
@@ -318,15 +335,17 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                     var id     = parseInt(response[i]['id']);
                     var sender = parseInt(response[i]['sender']);
                     var msg    = response[i]['message'];
+                    var time   = response[i]['timeSent'];
+                    var title  = formatDate(new Date(time));
                     var message; var imageSrc;var imageMarkUp;
                     if(sender===loggedInUser){
                         imageSrc= $('#profile-img').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+                        message = '<li title="'+title+'" id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
                     }else{
                         imageSrc= $('#user-image').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+                        message = '<li title="'+title+'"  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
                     }
                     $("#messages-list").append(message);
                 }
