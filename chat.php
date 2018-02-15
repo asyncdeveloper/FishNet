@@ -65,19 +65,32 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                         <li class="contact" onclick="showMsg(<?=$user['id']?>)" id="<?=$user['id']?>">
                             <div class="wrap">
                                 <?php
-                                    $lastLogin = $user['last_login'];
-                                    $currentTime = date('Y-m-d h:i:s', time());
-                                    $diffInSeconds = (int)strtotime($currentTime) - strtotime($lastLogin);
-                                        if($diffInSeconds>60 || $diffInSeconds<0):
+                                $lastLogin = $user['last_login'];
+                                $currentTime = date('Y-m-d H:i:s', time());
+                                $datetime1 = new DateTime($currentTime);
+                                $datetime2 = new DateTime($lastLogin);
+                                $interval = $datetime1->diff($datetime2);
+                                $status;
+                                if($interval->format('%h') > 0){
+                                    //More dan an hr
+                                    $hrs  = $interval->format('%i');
+                                    $mins = $interval->format('%h');
+                                    $status = 0;
+                                }else{
+                                    //Less than hr
+                                    $hrs  = $interval->format('%i');
+                                    $mins = $interval->format('%h');
+                                    if($mins>2  || $hrs>0)
+                                        $status = 0;
+                                    else
+                                        $status = 1;
+                                }
+                                        if(!$status):
                                     ?>
                                     <span id="span<?=$user['id']?>" class="contact-status offline"></span>
                                 <?php else: ?>
                                     <span class="contact-status online"></span>
                                 <?php endif; ?>
-                                <script>
-                                    //alert('<?=$diffInSeconds?>');
-                                </script>
-
                                 <?php if($user['image']): ?>
                                     <img id="profile-img" src="<?=$user['image']?>" class="online" alt="" />
                                 <?php else: ?>
@@ -130,7 +143,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         }
     }, 100);*/
     $(document).ready(function() {
-        window.setInterval('updateSideBarInfo()', 30000);
+        window.setInterval('updateSideBarInfo()', 5000);
     });
 
     function updateSideBarInfo(){
@@ -152,6 +165,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 
     }
     function updateSideBarIcon(data,id) {
+        //console.log("Seconds since log in",data)
+        //alert(data);
         if(data=='0'){
             //Set to offline
             idName = 'span'+id;
@@ -325,5 +340,6 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     });
 
 </script>
+
 </body>
 </html>
