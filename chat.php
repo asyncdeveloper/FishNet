@@ -2,14 +2,13 @@
 <html>
 <head>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
-    <script src="https://use.typekit.net/hoy3lrg.js"></script>
-
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'><link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
     <link rel="stylesheet" href="assets/css/chat.css" />
+    <link rel="stylesheet" href="assets/jGrowl-master/jquery.jgrowl.css" type="text/css"/>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
 </head>
 <?php
 require_once "includes/database.php";
-
 if(empty($_SESSION['username']) || empty($_SESSION['id'])){
     header("location: login.php");
 }
@@ -22,12 +21,14 @@ $contactsResult = mysqli_query($connection,"SELECT * FROM invites WHERE status='
 $numberOfContacts = mysqli_num_rows($contactsResult);
 
 ?>
-
 <script src="assets/js/jquery.3.2.1.min.js"></script>
 <script src="assets/js/timeago.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
-<body>
+<script type="text/javascript" src="assets/jGrowl-master/jquery.jgrowl.js"></script>
 
+
+<body>
+<div id="jGrowl-container1" class="jGrowl top-right"></div>
 <div id="frame">
     <div id="topHeader">
         <div id="h1header">
@@ -79,15 +80,27 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                             <div class="wrap">
                                 <?php
                                     $lastLogin = $user['last_login'];
-                                    $currentTime = date('Y-m-d h:i:s', time());
-                                    $diffInSeconds = strtotime($currentTime) - strtotime($lastLogin);
-                                        if($diffInSeconds>60):
+                                    $currentTime = date('Y-m-d H:i:s', time());
+                                    $datetime1 = new DateTime($currentTime);
+                                    $datetime2 = new DateTime($lastLogin);
+                                    $interval = $datetime1->diff($datetime2);
+                                    $status;
+                                    $hrs  = (int) $interval->format('%i');
+                                    $mins = (int)$interval->format('%h');
+                                    if($mins == 0 && $hrs==0){
+                                        $status =1 ;
+                                    }else{
+                                        if($mins>2  || $hrs>0)
+                                            $status = 0 ;
+                                        else
+                                            $status = 1 ;
+                                    }
+                                        if(!$status):
                                     ?>
                                     <span id="span<?=$user['id']?>" class="contact-status offline"></span>
                                 <?php else: ?>
-                                    <span class="contact-status online"></span>
+                                    <span id="span<?=$user['id']?>" class="contact-status online"></span>
                                 <?php endif; ?>
-
                                 <?php if($user['image']): ?>
                                     <img id="profile-img" src="<?=$user['image']?>" class="online" alt="" />
                                 <?php else: ?>
@@ -136,14 +149,99 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     </div>
 </div>
 <script>
-    /*window.setInterval(function(){
-        var currentUser = $('#receiver_id').val();
-        if(currentUser){
-          //  console.log("Chose ");
+    $.jGrowl.defaults.closerTemplate = '<div class="alert alert-info">Close All</div>';
+    function showNotification(userName,message) {
+        var alertTypes = ['success', 'info', 'warning', 'danger'];
+        var alertType = alertTypes[1];
+        $('#jGrowl-container1').jGrowl({
+            header:  userName +' says \n ',
+            message: message ,
+            group: 'alert-' + alertType,
+            life: 5000
+        });
+
+        /*for (var i=0; i<10; i++) {
+            setTimeout(function(){
+                var alertType = alertTypes[Math.floor(Math.random()*alertTypes.length)];
+                $('#jGrowl-container1').jGrowl({
+                    header: alertType.substring(0, 1).toUpperCase() + alertType.substring(1) + ' Notification',
+                    message: 'Hello world ',
+                    group: 'alert-' + alertType,
+                    life: 5000
+                });
+            }, i*2000);
+        }*/
+    }
+
+    function formatDate(date) {
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+
+        var day = date.getDate();
+        var monthIndex = date.getMonth();
+        var year = date.getFullYear();
+
+        return day + ' ' + monthNames[monthIndex] + ' ' + year;
+    }
+
+
+
+    function updateMessageUI(response) {
+        var len = response.length;
+        var loggedInUser  = parseInt('<?=$_SESSION['id']?>');
+        for( var i = 0; i<len; i++){
+            var id     = parseInt(response[i]['id']);
+            var name   =  response[i]['username'];
+            var sender = parseInt(response[i]['sender']);
+            var msg    = response[i]['message'];
+            var time   = response[i]['timeSent'];
+            var title  = formatDate(new Date(time));
+            var message; var imageSrc;var imageMarkUp;
+            showNotification(name,msg);
+            if(sender===loggedInUser){
+                imageSrc= $('#profile-img').attr('src');
+                imageMarkUp ='<img src='+imageSrc+' alt="" />';
+                message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p title="'+title+'" >'+  msg+ '</p></li>';
+            }else{
+                imageSrc= $('#user-image').attr('src');
+                imageMarkUp ='<img src='+imageSrc+' alt="" />';
+                message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p title="'+title+'" >'+  msg+ '</p></li>';
+            }
+            $("#messages-list").append(message);
         }
-    }, 100);*/
+    }
+
     $(document).ready(function() {
-        window.setInterval('updateSideBarInfo()', 10000);
+        window.setInterval(function () {
+            var activeChatUser = $('#receiver_id').val();
+            var lastMsgId = $('#messages-list li:last-child').attr("id");
+            if(activeChatUser && lastMsgId){
+                //Fetch latest Message
+                $.ajax({
+                    type: "POST",
+                    url: "getRecentMessages.php",
+                    data: {
+                        id          : activeChatUser,
+                        lastMsgId   : lastMsgId
+                    },
+                    success: function (response) {
+                        response =JSON.parse(response);
+                        updateMessageUI(response);
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        },5000)
+    });
+
+    $(document).ready(function() {
+        //Update every 30 seconds
+        window.setInterval('updateSideBarInfo()', 30000);
     });
 
     function updateSideBarInfo(){
@@ -165,18 +263,19 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 
     }
     function updateSideBarIcon(data,id) {
-        data = parseInt(data);
-        if(data===0){
+        //console.log("Seconds since log in",data)
+        //alert(data);
+        if(data=='0'){
             //Set to offline
             idName = 'span'+id;
             icon = $("body").find('#' + idName);
             icon.removeClass("online");
             icon.addClass("offline");
         }else{
-            //Set to online
             idName = 'span'+id;
             icon = $("body").find('#' + idName);
             icon.removeClass("offline");
+            $("#last-seen").hide();
             icon.addClass("online");
         }
     }
@@ -229,9 +328,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     function updateUI(data) {
         $("#last-seen").hide();
         data =JSON.parse(data);
-
         $('#receiver_id').val(data.id);
-
         if (data.image) {
             $("#user-image").attr("src", data.image);
         } else {
@@ -242,14 +339,13 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         }else{
             $("#user-full-name").html(data.username);
         }
-
         var userLastLogin = data.last_login;
         var d2 = new Date();
         var d1 = new Date(userLastLogin);
         var seconds =  parseInt((d2- d1)/1000);
         //If use last seen greater than a minute set to offline
-        var  idName;
-        if(seconds>60){
+        var isOnline = parseInt(data.isActive);
+        if(!isOnline){
             //Set to offline
             idName = 'span'+data.id;
             icon = $("body").find('#' + idName);
@@ -263,6 +359,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             icon = $("body").find('#' + idName);
             icon.removeClass("offline");
             icon.addClass("online");
+            $("#last-seen").text("Online");
+            $("#last-seen").show();
         }
         getAllMessages(data.id);
     }
@@ -277,17 +375,20 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                 var loggedInUser  = parseInt('<?=$_SESSION['id']?>');
                 $("#messages-list").empty();
                 for( var i = 0; i<len; i++){
+                    var id     = parseInt(response[i]['id']);
                     var sender = parseInt(response[i]['sender']);
                     var msg    = response[i]['message'];
+                    var time   = response[i]['timeSent'];
+                    var title  = formatDate(new Date(time));
                     var message; var imageSrc;var imageMarkUp;
                     if(sender===loggedInUser){
                         imageSrc= $('#profile-img').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+                        message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p title="'+title+'" >'+  msg+ '</p></li>';
                     }else{
                         imageSrc= $('#user-image').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+                        message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p title="'+title+'" >'+  msg+ '</p></li>';
                     }
                     $("#messages-list").append(message);
                 }
@@ -310,38 +411,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
 
-    $("#profile-img").click(function() {
-        $("#status-options").toggleClass("active");
-    });
-
-    $(".expand-button").click(function() {
-        $("#profile").toggleClass("expanded");
-        $("#contacts").toggleClass("expanded");
-    });
-
-    $("#status-options ul li").click(function() {
-        $("#profile-img").removeClass();
-        $("#status-online").removeClass("active");
-        $("#status-away").removeClass("active");
-        $("#status-busy").removeClass("active");
-        $("#status-offline").removeClass("active");
-        $(this).addClass("active");
-
-        if($("#status-online").hasClass("active")) {
-            $("#profile-img").addClass("online");
-        } else if ($("#status-away").hasClass("active")) {
-            $("#profile-img").addClass("away");
-        } else if ($("#status-busy").hasClass("active")) {
-            $("#profile-img").addClass("busy");
-        } else if ($("#status-offline").hasClass("active")) {
-            $("#profile-img").addClass("offline");
-        } else {
-            $("#profile-img").removeClass();
-        }
-
-        $("#status-options").removeClass("active");
-    });
-
 </script>
+
 </body>
 </html>

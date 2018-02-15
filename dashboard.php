@@ -28,9 +28,7 @@ require_once "includes/head.php";
 
         <div class="content">
             <div class="container-fluid">
-
                 <div class="row">
-                    <!--kjdwkjdqwkjdqjkw-->
                     <div class="col-md-12">
                         <div class="card ">
                             <div class="header">
