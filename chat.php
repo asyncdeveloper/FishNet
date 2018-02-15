@@ -67,13 +67,16 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                                 <?php
                                     $lastLogin = $user['last_login'];
                                     $currentTime = date('Y-m-d h:i:s', time());
-                                    $diffInSeconds = strtotime($currentTime) - strtotime($lastLogin);
-                                        if($diffInSeconds>60):
+                                    $diffInSeconds = (int)strtotime($currentTime) - strtotime($lastLogin);
+                                        if($diffInSeconds>60 || $diffInSeconds<0):
                                     ?>
                                     <span id="span<?=$user['id']?>" class="contact-status offline"></span>
                                 <?php else: ?>
                                     <span class="contact-status online"></span>
                                 <?php endif; ?>
+                                <script>
+                                    //alert('<?=$diffInSeconds?>');
+                                </script>
 
                                 <?php if($user['image']): ?>
                                     <img id="profile-img" src="<?=$user['image']?>" class="online" alt="" />
@@ -127,7 +130,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         }
     }, 100);*/
     $(document).ready(function() {
-        window.setInterval('updateSideBarInfo()', 60000);
+        window.setInterval('updateSideBarInfo()', 30000);
     });
 
     function updateSideBarInfo(){
@@ -149,15 +152,13 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 
     }
     function updateSideBarIcon(data,id) {
-        data = parseInt(data);
-        if(data===0){
+        if(data=='0'){
             //Set to offline
             idName = 'span'+id;
             icon = $("body").find('#' + idName);
             icon.removeClass("online");
             icon.addClass("offline");
         }else{
-            //Set to online
             idName = 'span'+id;
             icon = $("body").find('#' + idName);
             icon.removeClass("offline");
