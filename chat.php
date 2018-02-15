@@ -159,18 +159,34 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             group: 'alert-' + alertType,
             life: 5000
         });
+    }
 
-        /*for (var i=0; i<10; i++) {
-            setTimeout(function(){
-                var alertType = alertTypes[Math.floor(Math.random()*alertTypes.length)];
-                $('#jGrowl-container1').jGrowl({
-                    header: alertType.substring(0, 1).toUpperCase() + alertType.substring(1) + ' Notification',
-                    message: 'Hello world ',
-                    group: 'alert-' + alertType,
-                    life: 5000
-                });
-            }, i*2000);
-        }*/
+    function allNotification() {
+        $.ajax({
+            type: "POST",
+            url: "getNotificationMessages.php",
+            success: function (response) {
+                var alertTypes = ['success', 'info', 'warning', 'danger'];
+                var alertType = alertTypes[1];
+                response =JSON.parse(response);
+                var len = response.length;
+                for (var i=0; i<len; i++) {
+                    var userName     = response[i]['username'];
+                    var message      = response[i]['message'];
+                    setTimeout(function(){
+                        $('#jGrowl-container1').jGrowl({
+                            header:  userName +' says \n ',
+                            message: message ,
+                            group: 'alert-' + alertType,
+                            life: 3000
+                        });
+                    }, i*2000);
+                }
+            },
+            error: function () {
+            }
+        });
+
     }
 
     function formatDate(date) {
@@ -187,7 +203,6 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 
         return day + ' ' + monthNames[monthIndex] + ' ' + year;
     }
-
 
 
     function updateMessageUI(response) {
@@ -216,6 +231,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     }
 
     $(document).ready(function() {
+        //get Recent Messages
         window.setInterval(function () {
             var activeChatUser = $('#receiver_id').val();
             var lastMsgId = $('#messages-list li:last-child').attr("id");
@@ -236,12 +252,11 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                     }
                 });
             }
-        },5000)
-    });
-
-    $(document).ready(function() {
+        },5000);
         //Update every 30 seconds
         window.setInterval('updateSideBarInfo()', 30000);
+        //Check for generic notification every thirty seconds
+        window.setInterval('allNotification()',30000);
     });
 
     function updateSideBarInfo(){
