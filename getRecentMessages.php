@@ -9,14 +9,25 @@ if(!empty($_POST['id'])){
     );
     $userMessages =array();
     while($row =mysqli_fetch_assoc($result)){
-        $id         = $row['id'];
-        $message    = $row['message'];
-        $timeSent   = $row['time_sent'];
-        $sender     = $row['sender'];
-        $receiver   = $row['receiver'];
-        $status     = $row['status'];
+        $id             = $row['id'];
+        $sender         = $row['sender'];
+        $receiver       = $row['receiver'];
+        if($sender==$loggedInUser){
+            $userid = $receiver;
+        }else{
+            $userid = $sender;
+        }
+        $userNameSet    = mysqli_query($connection,"SELECT * FROM users WHERE id='$userid'");
+        $userName       = mysqli_fetch_array($userNameSet);
+        $userName       = $userName['username'];
+        $message        = $row['message'];
+        $timeSent       = $row['time_sent'];
+        $sender         = $row['sender'];
+        $receiver       = $row['receiver'];
+        $status         = $row['status'];
         $userMessages[] = array(
             "id"          =>  $id,
+            "username"    =>  $userName,
             "sender"      =>  $sender,
             "receiver"    =>  $receiver,
             "message"     =>  $message,

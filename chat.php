@@ -2,14 +2,13 @@
 <html>
 <head>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
-    <script src="https://use.typekit.net/hoy3lrg.js"></script>
-
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'><link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
     <link rel="stylesheet" href="assets/css/chat.css" />
+    <link rel="stylesheet" href="assets/jGrowl-master/jquery.jgrowl.css" type="text/css"/>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
 </head>
 <?php
 require_once "includes/database.php";
-
 if(empty($_SESSION['username']) || empty($_SESSION['id'])){
     header("location: login.php");
 }
@@ -22,12 +21,14 @@ $contactsResult = mysqli_query($connection,"SELECT * FROM invites WHERE status='
 $numberOfContacts = mysqli_num_rows($contactsResult);
 
 ?>
-
 <script src="assets/js/jquery.3.2.1.min.js"></script>
 <script src="assets/js/timeago.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
-<body>
+<script type="text/javascript" src="assets/jGrowl-master/jquery.jgrowl.js"></script>
 
+
+<body>
+<div id="jGrowl-container1" class="jGrowl top-right"></div>
 <div id="frame">
     <div id="sidepanel">
         <div id="profile">
@@ -132,6 +133,30 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     </div>
 </div>
 <script>
+    $.jGrowl.defaults.closerTemplate = '<div class="alert alert-info">Close All</div>';
+    function showNotification(userName,message) {
+        var alertTypes = ['success', 'info', 'warning', 'danger'];
+        var alertType = alertTypes[1];
+        $('#jGrowl-container1').jGrowl({
+            header:  userName +' says \n ',
+            message: message ,
+            group: 'alert-' + alertType,
+            life: 5000
+        });
+
+        /*for (var i=0; i<10; i++) {
+            setTimeout(function(){
+                var alertType = alertTypes[Math.floor(Math.random()*alertTypes.length)];
+                $('#jGrowl-container1').jGrowl({
+                    header: alertType.substring(0, 1).toUpperCase() + alertType.substring(1) + ' Notification',
+                    message: 'Hello world ',
+                    group: 'alert-' + alertType,
+                    life: 5000
+                });
+            }, i*2000);
+        }*/
+    }
+
     function formatDate(date) {
         var monthNames = [
             "January", "February", "March",
@@ -154,11 +179,13 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
         var loggedInUser  = parseInt('<?=$_SESSION['id']?>');
         for( var i = 0; i<len; i++){
             var id     = parseInt(response[i]['id']);
+            var name   =  response[i]['username'];
             var sender = parseInt(response[i]['sender']);
             var msg    = response[i]['message'];
             var time   = response[i]['timeSent'];
             var title  = formatDate(new Date(time));
             var message; var imageSrc;var imageMarkUp;
+            showNotification(name,msg);
             if(sender===loggedInUser){
                 imageSrc= $('#profile-img').attr('src');
                 imageMarkUp ='<img src='+imageSrc+' alt="" />';
@@ -175,8 +202,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     $(document).ready(function() {
         window.setInterval(function () {
             var activeChatUser = $('#receiver_id').val();
-            if(activeChatUser){
-                lastMsgId = $('#messages-list li:last-child').attr("id");
+            var lastMsgId = $('#messages-list li:last-child').attr("id");
+            if(activeChatUser && lastMsgId){
                 //Fetch latest Message
                 $.ajax({
                     type: "POST",
@@ -367,38 +394,6 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     });
 
     $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-
-    $("#profile-img").click(function() {
-        $("#status-options").toggleClass("active");
-    });
-
-    $(".expand-button").click(function() {
-        $("#profile").toggleClass("expanded");
-        $("#contacts").toggleClass("expanded");
-    });
-
-    $("#status-options ul li").click(function() {
-        $("#profile-img").removeClass();
-        $("#status-online").removeClass("active");
-        $("#status-away").removeClass("active");
-        $("#status-busy").removeClass("active");
-        $("#status-offline").removeClass("active");
-        $(this).addClass("active");
-
-        if($("#status-online").hasClass("active")) {
-            $("#profile-img").addClass("online");
-        } else if ($("#status-away").hasClass("active")) {
-            $("#profile-img").addClass("away");
-        } else if ($("#status-busy").hasClass("active")) {
-            $("#profile-img").addClass("busy");
-        } else if ($("#status-offline").hasClass("active")) {
-            $("#profile-img").addClass("offline");
-        } else {
-            $("#profile-img").removeClass();
-        }
-
-        $("#status-options").removeClass("active");
-    });
 
 </script>
 
