@@ -162,11 +162,11 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             if(sender===loggedInUser){
                 imageSrc= $('#profile-img').attr('src');
                 imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                message = '<li title="'+title+'" id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+                message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p title="'+title+'" >'+  msg+ '</p></li>';
             }else{
                 imageSrc= $('#user-image').attr('src');
                 imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                message = '<li title="'+title+'"  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+                message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p title="'+title+'" >'+  msg+ '</p></li>';
             }
             $("#messages-list").append(message);
         }
@@ -341,11 +341,11 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                     if(sender===loggedInUser){
                         imageSrc= $('#profile-img').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li title="'+title+'" id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+                        message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p title="'+title+'" >'+  msg+ '</p></li>';
                     }else{
                         imageSrc= $('#user-image').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li title="'+title+'"  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+                        message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p title="'+title+'" >'+  msg+ '</p></li>';
                     }
                     $("#messages-list").append(message);
                 }
