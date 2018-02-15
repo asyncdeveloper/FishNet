@@ -29,6 +29,19 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 <body>
 
 <div id="frame">
+    <div id="topHeader">
+        <div id="h1header">
+                <ul>
+                    <li>FishNet</li>
+                </ul>
+        </div>
+        <div id="ulheader">
+            <ul>
+                <a href="dashboard.php"><li>Dashboard</li></a>
+                <a href="logout.php"><li>Logout</li></a>
+            </ul>
+        </div>
+    </div>
     <div id="sidepanel">
         <div id="profile">
             <div class="wrap">
@@ -37,7 +50,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                 <?php else: ?>
                     <img id="profile-img" src="assets/img/defaultAvatar.png" class="online" alt="" />
                 <?php endif; ?>
-                <p><?=$loggedInUser['username']?></p>
+                <strong><p><?=$loggedInUser['username']?></p></strong>
                 <div id="status-options">
                     <ul>
                         <li id="status-online" class="active"><span class="status-circle"></span> <p>Online</p></li>
@@ -117,6 +130,9 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                 <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
             </div>
         </div>
+    </div>
+    <div class="site-footer section-spacing">
+        <small>© 2018 All rights reserved. Made with <i class="fa fa-heart pulse"></i> by <a href="#">Team FishNet</a></small>
     </div>
 </div>
 <script>

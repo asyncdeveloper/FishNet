@@ -129,6 +129,7 @@ ul, li {
  -webkit-transition: all .5s ease-out;
  transition: all .5s ease-out;
 	padding: 12px 1.5em;
+	height: 50px;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active {
 	color: #fff;
@@ -221,6 +222,7 @@ ul, li {
 }
 .site-footer {
 	background: #F1F1F1;
+	letter-spacing: 3px;
 }
 .site-footer.section-spacing {
 	padding: 4.5em 0;

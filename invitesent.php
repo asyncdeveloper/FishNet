@@ -16,7 +16,7 @@ require_once "includes/head.php";
 <body>
 
 <div class="wrapper">
-    <div class="sidebar" data-color="purple" data-image="assets/img/backgroujdn.jpg">
+    <div class="sidebar" data-color="#1DC7EA" data-image="assets/img/backgroujdn.jpg">
 
         <?php  require_once "includes/leftSideBar.php"; ?>
 

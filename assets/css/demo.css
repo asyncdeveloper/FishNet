@@ -71,8 +71,6 @@ input[type="text"]{
     border-color: #4091e2 !important;
     color: #4091e2 !important;
 }
-#listNav {
-    /*display: inline-block;*/
-    color: red !important;
-    background-color: black !important;
+.form-error {
+    border: 1px solid red !important;
 }

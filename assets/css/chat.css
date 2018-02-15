@@ -3,7 +3,7 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: #4091e2;
+    background: #e3e3e3;
     font-family: "proxima-nova", "Source Sans Pro", sans-serif;
     font-size: 1em;
     letter-spacing: 0.1px;
@@ -450,7 +450,7 @@ body {
 #frame #sidepanel #bottom-bar button {
     float: left;
     border: none;
-    width: 50%;
+    width: 47.5%;
     padding: 10px 0;
     background: #32465a;
     color: #f5f5f5;
@@ -666,4 +666,40 @@ body {
 }
 #frame .content .message-input .wrap button:focus {
     outline: none;
+}
+a{
+    text-decoration: none !important;
+    color: inherit;
+}
+.site-footer {
+    background: #F1F1F1;
+    text-align: center;
+    letter-spacing: 3px;
+}
+.site-footer small {
+    color: #888;
+}
+#topHeader {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+#h1header{
+    width: 50%;
+}
+#ulheader{
+    width: 50%;
+    word-spacing: 20px;
+    text-align: right;
+}
+#topHeader ul li {
+    display: inline;
+}
+#topHeader li:hover {
+    background-color: #e3e3e3;
+    color: #fff;
+    cursor: pointer;
+}
+#topHeader ul{
+    padding: 3px 0px 3px 2px;
 }
