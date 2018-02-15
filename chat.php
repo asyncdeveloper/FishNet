@@ -136,12 +136,51 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     </div>
 </div>
 <script>
-    /*window.setInterval(function(){
-        var currentUser = $('#receiver_id').val();
-        if(currentUser){
-          //  console.log("Chose ");
+    function updateMessageUI(response) {
+        var len = response.length;
+        var loggedInUser  = parseInt('<?=$_SESSION['id']?>');
+        for( var i = 0; i<len; i++){
+            var id     = parseInt(response[i]['id']);
+            var sender = parseInt(response[i]['sender']);
+            var msg    = response[i]['message'];
+            var message; var imageSrc;var imageMarkUp;
+            if(sender===loggedInUser){
+                imageSrc= $('#profile-img').attr('src');
+                imageMarkUp ='<img src='+imageSrc+' alt="" />';
+                message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+            }else{
+                imageSrc= $('#user-image').attr('src');
+                imageMarkUp ='<img src='+imageSrc+' alt="" />';
+                message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+            }
+            $("#messages-list").append(message);
         }
-    }, 100);*/
+    }
+
+    $(document).ready(function() {
+        window.setInterval(function () {
+            var activeChatUser = $('#receiver_id').val();
+            if(activeChatUser){
+                lastMsgId = $('#messages-list li:last-child').attr("id");
+                //Fetch latest Message
+                $.ajax({
+                    type: "POST",
+                    url: "getRecentMessages.php",
+                    data: {
+                        id          : activeChatUser,
+                        lastMsgId   : lastMsgId
+                    },
+                    success: function (response) {
+                        response =JSON.parse(response);
+                        updateMessageUI(response);
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        },5000)
+    });
+
     $(document).ready(function() {
         //Update every 30 seconds
         window.setInterval('updateSideBarInfo()', 30000);
@@ -178,6 +217,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             idName = 'span'+id;
             icon = $("body").find('#' + idName);
             icon.removeClass("offline");
+            $("#last-seen").hide();
             icon.addClass("online");
         }
     }
@@ -275,17 +315,18 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                 var loggedInUser  = parseInt('<?=$_SESSION['id']?>');
                 $("#messages-list").empty();
                 for( var i = 0; i<len; i++){
+                    var id     = parseInt(response[i]['id']);
                     var sender = parseInt(response[i]['sender']);
                     var msg    = response[i]['message'];
                     var message; var imageSrc;var imageMarkUp;
                     if(sender===loggedInUser){
                         imageSrc= $('#profile-img').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
+                        message = '<li id="'+ id + '" class="sent" >'+ imageMarkUp +'<p>'+  msg+ '</p></li>';
                     }else{
                         imageSrc= $('#user-image').attr('src');
                         imageMarkUp ='<img src='+imageSrc+' alt="" />';
-                        message = '<li class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
+                        message = '<li  id="'+ id + '" class="replies" >'+imageMarkUp+'<p>'+  msg+ '</p></li>';
                     }
                     $("#messages-list").append(message);
                 }

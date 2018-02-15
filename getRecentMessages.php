@@ -1,10 +1,11 @@
 <?php
 require_once "includes/database.php";
 if(!empty($_POST['id'])){
-    $receiver = $_POST['id'];
-    $loggedInUser = $_SESSION['id'];
+    $receiver       =  $_POST['id'];
+    $loggedInUser   =  $_SESSION['id'];
+    $lastMsgId      =  $_POST['lastMsgId'];
     $result = mysqli_query(
-        $connection, "SELECT * FROM messages WHERE sender='$receiver' OR receiver='$receiver' ORDER BY id ASC "
+        $connection, "SELECT * FROM messages WHERE  id>$lastMsgId AND ( sender='$receiver' OR receiver='$receiver') ORDER BY id"
     );
     $userMessages =array();
     while($row =mysqli_fetch_assoc($result)){
