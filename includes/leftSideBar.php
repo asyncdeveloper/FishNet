@@ -1,7 +1,7 @@
 <?php require_once "database.php"; ?>
 <div class="sidebar-wrapper">
     <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text">
+        <a href="profile.php" class="simple-text">
             <?=$loggedInUser['username']?>
         </a>
     </div>

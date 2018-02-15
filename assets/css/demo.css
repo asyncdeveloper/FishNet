@@ -12,7 +12,9 @@
         position: absolute;
     }
 }
-
+input[type="text"]{
+    border-radius: 5px;
+}
 .all-icons [class*="pe-"]{
     font-size: 40px;
 }
@@ -66,6 +68,11 @@
     }
 }
 .btn-purple{
-    border-color: #9566d5 !important;
-    color: #9566d5 !important;
+    border-color: #4091e2 !important;
+    color: #4091e2 !important;
+}
+#listNav {
+    /*display: inline-block;*/
+    color: red !important;
+    background-color: black !important;
 }
