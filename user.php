@@ -15,27 +15,24 @@ if(isset($_POST['submit'])){
     $firstname      = $_POST['firstname'];
     $lastname       = $_POST['lastname'];
     $country        = $_POST['country'];
+    $state          = $_POST['state'];
     $city           = $_POST['city'];
     $address        = $_POST['address'];
-    $postalCode     = $_POST['postalcode'];
     $aboutMe        = $_POST['about_me'];
     $species        = $_POST['species'];
-    if($loggedInUser['type']='fisher'){
-        $status = mysqli_query($connection,"UPDATE users SET username='$username',first_name='$firstname',last_name='$lastname',
-        species='$species',country='$country',city='$city',address='$address',postal_code='$postalCode',about_me='$aboutMe' WHERE id='{$_SESSION['id']}' ");
-        if($status){
-            header("location: user.php?success");
-        }
-    }else{
-        $status = mysqli_query($connection,"UPDATE users SET username='$username',first_name='$firstname',last_name='$lastname',
-        species='$species',country='$country',city='$city',address='$address',postal_code='$postalCode',about_me='$aboutMe' WHERE id='{$_SESSION['id']}' ");
-        if($status){
-            header("location: user.php?success");
-        }
+
+    $status = mysqli_query($connection,"UPDATE users SET 
+    username='$username',first_name='$firstname',last_name='$lastname',
+    species='$species',country='$country',state='$state',city='$city',address='$address'
+    ,about_me='$aboutMe' WHERE id='{$_SESSION['id']}' ");
+    if($status){
+        header("location: user.php?success");
     }
 }
 require_once "includes/head.php";
 ?>
+<link href="assets/css/tagsinput.css" rel="stylesheet">
+
 <body>
 
 <div class="wrapper">
@@ -67,7 +64,7 @@ require_once "includes/head.php";
                                     </div>
                                 <?php endif; ?>
 
-                                <form action="<?=$_SERVER['PHP_SELF']?>" method="post" >
+                                <form action="<?=$_SERVER['PHP_SELF']?>" method="POST" onkeypress="return event.keyCode != 13;">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -95,44 +92,92 @@ require_once "includes/head.php";
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Country</label>
-                                                <input required type="text" class="form-control" placeholder="Country" value="<?=$loggedInUser['country']?>" name="country" maxlength="100">
+                                                <label for="country">Country</label>
+                                                <select required class="form-control" name="country" id="country">
+                                                    <option disabled selected>Choose your country</option>
+                                                    <?php
+                                                        $countries = mysqli_query($connection,"SELECT * FROM `countries` ORDER BY name");
+                                                        while ($country = mysqli_fetch_array($countries)):
+                                                    ?>
+                                                            <option
+                                                                value="<?=$country['id']?>"
+                                                                <?php if($loggedInUser['country']==$country['id']) echo " selected"; ?>
+                                                            >
+                                                                <?php echo  $country['name'] ?>
+                                                            </option>
+                                                    <?php endwhile; ?>
+                                                </select>
+
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>City</label>
-                                                <input required type="text" class="form-control" placeholder="City" value="<?=$loggedInUser['city']?>" name="city">
+                                                <label for="state">State</label>
+                                                <select required class="form-control" name="state" id="state">
+                                                    <option disabled selected>Choose State</option>
+                                                    <?php if($loggedInUser['state']): ?>
+                                                        <?php
+                                                        $states = mysqli_query($connection,"SELECT * FROM `states` WHERE country_id='$loggedInUser[country]' ORDER BY name");
+                                                        while ($state = mysqli_fetch_array($states)):
+                                                            ?>
+
+                                                                <option
+                                                                        value="<?=$state['id']?>"
+                                                                    <?php if($loggedInUser['state']==$state['id']) echo " selected"; ?>
+                                                                >
+                                                                    <?php echo $state['name'] ?>
+                                                                </option>
+                                                        <?php endwhile; ?>
+                                                    <?php endif; ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
 
 
                                     <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="city">City</label>
+                                                <select required class="form-control" name="city" id="city">
+                                                    <option disabled selected>Choose City</option>
+                                                    <?php if($loggedInUser['city']): ?>
+                                                        <?php
+                                                            $cities = mysqli_query($connection,"SELECT * FROM `cities` WHERE state_id='$loggedInUser[state]' ORDER BY name");
+                                                            while ($city = mysqli_fetch_array($cities)):
+                                                                ?>
+                                                                <option
+                                                                    value="<?=$city['id']?>"
+                                                                    <?php if($loggedInUser['city']==$city['id']) echo " selected"; ?>
+                                                                >
+                                                                <?php echo $city['name'] ?>
+                                                            </option>
+                                                        <?php endwhile; ?>
+                                                    <?php endif; ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Address</label>
                                                 <input type="text" class="form-control" placeholder="Home Address" value="<?=$loggedInUser['address']?>" name="address">
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Postal Code</label>
-                                                <input type="number" class="form-control" placeholder="ZIP Code" value="<?=$loggedInUser['postal_code']?>" maxlength="10" name="postalcode">
-                                            </div>
-                                        </div>
+
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <?php if($loggedInUser['user_type']=='fisher'):?>
-                                                    <label>Species Owned <sub style="color: red">*Separate with comma</sub></label>
-                                                    <input type="text" class="form-control" placeholder="Mackrel" value="<?=$loggedInUser['species']?>"  name="species">
+                                                    <label for="species">Species Owned</label>
                                                 <?php else: ?>
-                                                    <label>Species Researching on <sub style="color: red">*Separate with comma</sub></label>
-                                                    <input type="text" class="form-control" placeholder="Mackrel" value="<?=$loggedInUser['species']?>"  name="species">
+                                                    <label for="species">Species Researching on </label>
                                                 <?php endif; ?>
+                                                <br>
+                                                <input style="width: available" data-role="tagsinput" type="text" name="species" class="form-control"  value="<?=$loggedInUser['species']?>" required>
                                             </div>
                                         </div>
                                     </div>
@@ -148,7 +193,7 @@ require_once "includes/head.php";
                                     </div>
 
                                     <div class="text-center">
-                                        <button name="submit" type="submit" class="btn btn-success btn-fill">Update Profile</button>
+                                        <button name="submit"  class="btn btn-success btn-fill">Update Profile</button>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
@@ -195,7 +240,6 @@ require_once "includes/head.php";
                                 <button href="#" class="btn btn-simple"><i class="fa fa-facebook-square"></i></button>
                                 <button href="#" class="btn btn-simple"><i class="fa fa-twitter"></i></button>
                                 <button href="#" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>
-
                             </div>
                         </div>
                     </div>
@@ -214,8 +258,11 @@ require_once "includes/head.php";
 </body>
 
 <?php require_once "includes/footer.php" ?>
+<script src="assets/js/typehead.js"></script>
+<script src="assets/js/tagsinput.js"></script>
 <script>
     $(document).ready(function() {
+
         $("#profilefoto").on('change',function () {
             var imgItem    =    $(this)[0].files;
             var imgCount   =    $(this)[0].files.length;
@@ -324,7 +371,50 @@ require_once "includes/head.php";
                 $("<br><br><br><br>"+upload).appendTo(imgPreview);
             }
         });
+
+        $("#country").change(function(){
+            var country_id = $(this).val();
+            $.ajax({
+                url: 'fetchStates.php',
+                type: 'post',
+                data: {country:country_id},
+                dataType: 'json',
+                success:function(response){
+                    var len = response.length;
+                    $("#state").empty();
+                    $("#state").append("<option value=''>Choose your State</option>");
+                    for( var i = 0; i<len; i++){
+                        var id = response[i]['id'];
+                        var name = response[i]['name'];
+                        $("#state").append("<option value='"+id+"'>"+name+"</option>");
+                    }
+                }
+            });
+        });
+
+        $("#state").change(function(){
+            var state_id = $(this).val();
+            $.ajax({
+                url: 'fetchCities.php',
+                type: 'post',
+                data: {state:state_id},
+                dataType: 'json',
+                success:function(response){
+                    var len = response.length;
+                    $("#city").empty();
+                    $("#city").append("<option value=''>Choose your City</option>");
+                    for( var i = 0; i<len; i++){
+                        var id = response[i]['id'];
+                        var name = response[i]['name'];
+                        $("#city").append("<option value='"+id+"'>"+name+"</option>");
+                    }
+                }
+            });
+        });
+
     });
+
+
 </script>
 
 </html>

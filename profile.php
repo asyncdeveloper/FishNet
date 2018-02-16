@@ -52,6 +52,28 @@ if(isset($_POST['submit'])){
 }
 
 $currentUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$id' "));
+$country =  $currentUser['country'];
+//Fetch country Name
+if($country){
+    $countryName    = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM countries WHERE id='$country'"));
+    $countryName    = array_shift($countryName);
+}else
+    $countryName    = "Unknown";
+//Fetch StateName
+$state   =  $currentUser['state'];
+if($state){
+    $stateName      = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM states WHERE id='$state'"));
+    $stateName      = array_shift($stateName);
+}else
+    $stateName      = "Unknown";
+//Fetch City Name
+$city    =  $currentUser['city'];
+if($city){
+    $cityName      = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM cities WHERE id='$city'"));
+    $cityName      = array_shift($cityName);
+}else
+    $cityName      = "Unknown";
+
 require_once "includes/head.php";
 ?>
 <body>
@@ -74,16 +96,6 @@ require_once "includes/head.php";
                                 <h4 class="title text-center">User Profile</h4>
                             </div>
                             <div class="content">
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>Username </label>
-                                                <p><?=$currentUser ['username']?></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -103,32 +115,35 @@ require_once "includes/head.php";
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Country</label>
-                                                <p><?=($currentUser ['country']) ? $currentUser ['country'] : "Unknown" ?></p>
+                                                <p><?php echo $countryName; ?></p>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>City</label>
-                                                <p><?=($currentUser ['city']) ? $currentUser ['city'] : "Unknown" ?></p>
+                                                <label>State</label>
+                                                <p><?php echo $stateName; ?></p>
                                             </div>
                                         </div>
                                     </div>
 
-
                                     <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>City</label>
+                                                <p><?php echo $cityName; ?></p>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Address</label>
                                                 <p><?=($currentUser ['address']) ? $currentUser ['address'] : "Unknown" ?></p>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Postal Code</label>
-                                                <p><?=($currentUser ['postal_code']) ? $currentUser ['postal_code'] : "Unknown" ?></p>
-                                            </div>
-                                        </div>
+
                                     </div>
+
                                 <?php if($currentUser ['type']='fisher'):?>
                                     <label>Species Owned</label>
                                 <?php else: ?>
@@ -141,12 +156,18 @@ require_once "includes/head.php";
                                         for($i=0 ; $i<50 ;$i++):
                                             if(!empty($skills[$i])):
                                                 ?>
-                                                <span class="button"><?=$skills[$i]?></span>
+                                                <span class="label label-success">
+                                                    <?php
+                                                        echo ucwords($skills[$i]);
+                                                    ?>
+                                                </span>
+                                            &nbsp;
                                             <?php endif;  ?>
                                         <?php endfor;  ?>
                                     <?php else: ?>
                                         <p>Unknown</p>
                                 <?php endif; ?>
+                                <br><br><br><br>
                                     <div class="clearfix"></div>
 
                                     <?php if(isset($_REQUEST['success'])): ?>
@@ -177,13 +198,13 @@ require_once "includes/head.php";
                                         <?php if($status==2): ?>
                                             <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
                                                 <input type="hidden" name="reciepient_id" value="<?=$id?>" >
-                                                <button name="submit" type="submit" class="btn btn-default btn-fill" >Proceed to Invite</button>
+                                                <button name="submit" type="submit" class="btn btn-info btn-fill" >Proceed to Invite</button>
                                             </form>
                                         <?php else: ?>
                                             <button name="submit" type="submit" class="btn btn-success btn-fill" >Invite Sent</button>
                                         <?php endif; ?>
                                     <?php else: ?>
-                                            <button name="submit" type="submit" class="btn btn-info btn-fill">Cannot Invite No Connection Found</button>
+                                            <button name="submit" type="submit" class="btn btn-danger btn-fill">Cannot Invite No Connection Found</button>
                                     <?php endif;  ?>
                                 </div>
                             </div>
@@ -211,7 +232,11 @@ require_once "includes/head.php";
                                     <?=$currentUser ['about_me']?>
                                 </p>
                                 <p class="description text-center">
-                                    <strong>Role:&nbsp;<?=ucwords($currentUser['user_type'])?></strong>
+                                    <strong>Role:&nbsp;
+                                        <?php
+                                            echo ($currentUser['user_type']=='fisher') ? ucwords("Expert") : "Researcher" ;
+                                        ?>
+                                    </strong>
                                 </p>
                             </div>
                             <hr>
