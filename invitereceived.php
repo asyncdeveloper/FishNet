@@ -53,7 +53,7 @@ require_once "includes/head.php";
                                     <thead>
                                     <th>Name</th>
                                     <th>Country</th>
-                                    <th>Location</th>
+                                    <th>State</th>
                                     <th>Date Request Sent</th>
                                     <th>Request Status</th>
                                     <th>Action</th>
@@ -63,7 +63,29 @@ require_once "includes/head.php";
                                     while ($expert = mysqli_fetch_array($result)):
                                         $sid = $expert['sender_id'];
                                         $rid = $expert['reciepient_id'];
-                                        $userDetails = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='{$expert['sender_id']}'"))
+                                        $userDetails = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='{$expert['sender_id']}'"));
+                                        $country =  $userDetails['country'];
+                                        //Fetch country Name
+                                        if($country){
+                                            $countryName    = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM countries WHERE id='$country'"));
+                                            $countryName    = array_shift($countryName);
+                                        }else
+                                            $countryName    = "Unknown";
+                                        //Fetch StateName
+                                        $state   =  $userDetails['state'];
+                                        if($state){
+                                            $stateName      = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM states WHERE id='$state'"));
+                                            $stateName      = array_shift($stateName);
+                                        }else
+                                            $stateName      = "Unknown";
+                                        //Fetch City Name
+                                        $city    =  $userDetails['city'];
+                                        if($city){
+                                            $cityName      = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM cities WHERE id='$city'"));
+                                            $cityName      = array_shift($cityName);
+                                        }else
+                                            $cityName      = "Unknown";
+
                                         ?>
                                         <tr>
                                             <td>
@@ -71,9 +93,9 @@ require_once "includes/head.php";
                                                     <?=$userDetails['first_name']." ".$userDetails['last_name']?>
                                                 </a>
                                             </td>
-                                            <td><?=$userDetails['country']?></td>
-                                            <td><?=$userDetails['city']?></td>
-                                            <td><?=date("d,F Y",strtotime($expert['date_created']))?></td>
+                                            <td><?=$countryName?></td>
+                                            <td><?=$stateName?></td>
+                                            <td><?=date("d, F Y",strtotime($expert['date_created']))?></td>
                                             <td>
                                                 <?php if($expert['status']=='0'){
                                                     echo  "Pending";
@@ -87,9 +109,6 @@ require_once "includes/head.php";
                                             <td>
                                                 <?php if($expert['status']=='0'):?>
                                                     <a class="pe-7s-check" title="Accept Invitation" href="<?="invitereceived.php?status=1&sid={$userDetails['id']}&rid={$_SESSION['id']}"?>" >
-                                                    </a>
-                                                    &nbsp;&nbsp;
-                                                    <a class="pe-7s-close" title="Decline Invitation" href="<?="invitereceived.php?status=4&sid={$userDetails['id']}&rid={$_SESSION['id']}"?>" >
                                                     </a>
                                                 <?php else: ?>
                                                     <a class="pe-7s-key">
@@ -121,6 +140,10 @@ require_once "includes/head.php";
 
     </div>
 </div>
+<?php
+//Update Db all invites seen
+$qry =mysqli_query($connection,"UPDATE invites SET seen=1 WHERE reciepient_id='{$_SESSION['id']}'");
+?>
 
 
 </body>

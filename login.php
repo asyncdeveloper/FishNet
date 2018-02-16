@@ -50,7 +50,7 @@ if(isset($_POST['submit'])){
                                             <script>
                                                 setTimeout( function(){
                                                 window.location='dashboard.php'
-                                                }, 2500);
+                                                }, 1000);
                                             </script>
                                         </div>
                                     <?php endif; ?>

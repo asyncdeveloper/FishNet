@@ -11,5 +11,6 @@ if(isset($_SESSION['id'])){
         mysqli_query($connection,"UPDATE users SET last_login=NOW() WHERE id='{$_SESSION['id']}' ");
     }
 }
+error_reporting(0);
 ?>
 

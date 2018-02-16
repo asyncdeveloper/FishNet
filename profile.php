@@ -180,18 +180,23 @@ require_once "includes/head.php";
                                         </div>
                                     <?php endif; ?>
                                 <?php
+                                 //0-request pending   1-connected  2-not friends
                                     //Check if invite already sent
-                                    $resultSet = mysqli_query($connection, "SELECT status from invites WHERE sender_id='{$_SESSION['id']}' AND reciepient_id='$id'");
+                                    $resultSet = mysqli_query($connection, "
+                                            SELECT * from invites WHERE (sender_id='{$loggedInUser['id']}' 
+                                             OR sender_id='$id' ) 
+                                            AND (reciepient_id='$id' OR reciepient_id='{$loggedInUser['id']}')"
+                                    );
+
                                     if(mysqli_num_rows($resultSet)>0){
-                                        $status= mysqli_fetch_array($resultSet);
-                                        $status = array_shift($status);
-                                        if($status)
-                                            $status=1;
-                                        else
-                                            $status=0;
-                                    }else{
+                                        $statusSet= mysqli_fetch_array($resultSet);
+                                        $status = $statusSet['status'];
+                                        $sender = $statusSet['sender_id'];
+                                    }
+                                    else{
                                         $status=2;
                                     }
+
                                 ?>
                                 <div class="text-center">
                                     <?php if($result): ?>
@@ -200,9 +205,24 @@ require_once "includes/head.php";
                                                 <input type="hidden" name="reciepient_id" value="<?=$id?>" >
                                                 <button name="submit" type="submit" class="btn btn-info btn-fill" >Proceed to Invite</button>
                                             </form>
-                                        <?php else: ?>
-                                            <button name="submit" type="submit" class="btn btn-success btn-fill" >Invite Sent</button>
-                                        <?php endif; ?>
+                                        <?php
+
+                                        elseif($status==1): ?>
+                                            <button name="submit" type="submit" class="btn btn-success btn-fill" >Connected</button>
+
+                                        <?php
+
+                                        elseif($status==0): ?>
+
+                                            <?php if($sender==$loggedInUser['id']): ?>
+                                                <button name="submit" type="submit" class="btn btn-warning btn-fill" >Request Pending</button>
+                                            <?php endif; ?>
+
+                                        <?php
+
+                                        endif;
+                                    ?>
+
                                     <?php else: ?>
                                             <button name="submit" type="submit" class="btn btn-danger btn-fill">Cannot Invite No Connection Found</button>
                                     <?php endif;  ?>

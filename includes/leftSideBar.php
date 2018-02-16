@@ -28,7 +28,7 @@
                     Invitation Received
                    &nbsp;<span style="color: red">
                         <?php
-                        $notif = mysqli_num_rows(mysqli_query($connection,"SELECT * FROM invites WHERE reciepient_id='{$_SESSION['id']}'"));
+                        $notif = mysqli_num_rows(mysqli_query($connection,"SELECT * FROM invites WHERE reciepient_id='{$_SESSION['id']}' AND seen=0"));
                         if($notif){
                             echo $notif;
                         }
