@@ -8,7 +8,7 @@ if(true){
     $lastLoginTime = array_shift($lastLoginTime);
 
     $result = mysqli_query(
-        $connection, "SELECT * FROM messages WHERE time_sent>'$lastLoginTime' AND ( sender='$loggedInUser' OR receiver='$loggedInUser')  ORDER BY id LIMIT 5"
+        $connection, "SELECT * FROM messages WHERE time_sent>='$lastLoginTime' AND ( sender='$loggedInUser' OR receiver='$loggedInUser')  ORDER BY id LIMIT 5"
     );
     $userMessages =array();
     while($row =mysqli_fetch_assoc($result)){

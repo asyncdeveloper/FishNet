@@ -61,12 +61,12 @@ require_once "includes/head.php";
                                                     <div style="text-align: center; width: -webkit-fill-available" class="imagecontent" >
                                                         <?php if(!empty($row['image'])): ?>
                                                             <img class="image-responsive"
-                                                                 alt="Avatar" style="width: 80%; height: 140px;"
+                                                                 alt="Avatar" style="width: 80%; height: 140px; max-width: 150px;"
                                                                  src="<?=$row['image']?>"
                                                             />
                                                             <?php else: ?>
                                                             <img class="image-responsive"
-                                                                 alt="Avatar" style="width: 80%; height: 140px;"
+                                                                 alt="Avatar" style="width: 80%; height: 140px; max-width: 150px;"
                                                                  src="assets/img/defaultAvatar.png"
                                                             />
                                                         <?php endif; ?>
