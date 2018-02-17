@@ -1,13 +1,12 @@
-<!doctype html>
-<html lang="en">
 <?php
 require_once "includes/database.php";
+session_start();
 if(empty($_SESSION['username']) || empty($_SESSION['id'])){
-    header("location: login.php");
+    header("Location: login.php");
 }
 $loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
 if(empty($loggedInUser)){
-    header("location: login.php");
+    header("Location: login.php");
 }
 function checkIfMatches($currentPageUserId,$loggedInUser,$connection){
     $currentUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$currentPageUserId' "));
@@ -34,9 +33,9 @@ function checkIfMatches($currentPageUserId,$loggedInUser,$connection){
 if(isset($_REQUEST['id'])){
     $id = $_REQUEST['id'];
     if(!intval($id))
-        header("location: dashboard.php");
+        header("Location: dashboard.php");
     elseif ($id==$_SESSION['id'])
-        header("location: dashboard.php");
+        header("Location: dashboard.php");
     else{
         $result = checkIfMatches($id,$loggedInUser,$connection);
     }
@@ -47,7 +46,7 @@ if(isset($_POST['submit'])){
     //Save to database
     $status = mysqli_query($connection,"INSERT INTO invites(sender_id,reciepient_id) VALUES('$senderId','$recipientId')");
     if($status){
-        header("location:profile.php?id=$recipientId&success");
+        header("Location: profile.php?id=$recipientId&success");
     }
 }
 

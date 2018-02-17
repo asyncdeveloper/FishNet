@@ -1,15 +1,13 @@
-<!doctype html>
-<html lang="en">
 <?php
 require_once "includes/database.php";
-
+session_start();
 if(empty($_SESSION['username']) || empty($_SESSION['id'])){
-    header("location: login.php");
+    //header("location: login.php");
 }
 
 $loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
 if(empty($loggedInUser)){
-    header("location: login.php");
+    //header("location: login.php");
 }
 if($loggedInUser['country']){
     $loggedInUserCountry = $loggedInUser['country'];

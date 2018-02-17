@@ -1,14 +1,13 @@
-<!doctype html>
-<html lang="en">
 <?php
 require_once "includes/database.php";
+session_start();
 if(empty($_SESSION['username']) || empty($_SESSION['id'])){
-    header("location: login.php");
+    header("Location: login.php");
 }
 
 $loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
 if(empty($loggedInUser)){
-    header("location: login.php");
+    header("Location: login.php");
 }
 if(isset($_POST['submit'])){
     $username       = $_POST['username'];
@@ -26,7 +25,7 @@ if(isset($_POST['submit'])){
     species='$species',country='$country',state='$state',city='$city',address='$address'
     ,about_me='$aboutMe' WHERE id='{$_SESSION['id']}' ");
     if($status){
-        header("location: user.php?success");
+        header("Location: user.php?success");
     }
 }
 require_once "includes/head.php";

@@ -1,15 +1,13 @@
-<!doctype html>
-<html lang="en">
 <?php
 require_once "includes/database.php";
-
+session_start();
 if(empty($_SESSION['username']) || empty($_SESSION['id'])){
-    header("location: login.php");
+    header("Location: login.php");
 }
 
 $loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
 if(empty($loggedInUser)){
-    header("location: login.php");
+    header("Location: login.php");
 }
 if(isset($_REQUEST['status']) && isset($_REQUEST['sid']) && isset($_REQUEST['rid']) ){
     $status = $_REQUEST['status'];
@@ -17,7 +15,7 @@ if(isset($_REQUEST['status']) && isset($_REQUEST['sid']) && isset($_REQUEST['rid
     $rid    = $_REQUEST['rid'];
     $update =mysqli_query($connection,"UPDATE invites SET status='$status' WHERE sender_id='$sid' AND reciepient_id='$rid'");
     if($update){
-        header("location: invitereceived.php");
+        header("Location: invitereceived.php");
     }
 }
 require_once "includes/head.php";
