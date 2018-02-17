@@ -238,7 +238,11 @@ require_once "includes/head.php";
                                     <?=$loggedInUser['about_me']?>
                                 </p>
                                 <p class="description text-center">
-                                    <strong>Role: &nbsp;<?=ucwords($loggedInUser['user_type'])?></strong>
+                                    <strong>Role: &nbsp;
+                                        <?php
+                                            echo ($loggedInUser['user_type']=='fisher') ? "Expert" : "Researcher"
+                                        ?>
+                                    </strong>
                                 </p>
                             </div>
                             <hr>

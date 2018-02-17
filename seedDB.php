@@ -1,19 +1,23 @@
 <?php
 require_once "includes/database.php";
-$jsonData   =  file_get_contents('FISH_JSON/catfish.json');
+session_start();
+$jsonData   =  file_get_contents('species.json');
 $data       = json_decode($jsonData,true);
-foreach ($data as $val){
-    $name   = $val[0]['FBname'];
-    $details = explode(",",$val[0]['Author']);
-    $author = $details[0];
-    $year   = $details[1];
-    $importance = $val[0]['Importance'];
-    $comments   = $val[0]['Comments'];
-    $weight     = $val[0]['Weight'];
-    $aquarium   = $val[0]['Aquarium'];
-    $usedForAquaculture = $val[0]['UsedforAquaculture'];
+foreach ($data['data'] as $key => $val){
 
-    //print_r($val);
+    $name        =$val['FBname'];
+    $importance = $val['Importance'];
+    $comments   = $val['Comments'];
+    $genus     = $val['Genus'];
+    $dangerous  = $val['Dangerous'];
+    $usedForAquaculture = $val['UsedforAquaculture'];
+    $species    = $val['Species'];
+	$images		= "Fishes/$name.jpg";
+
+    //echo $name."<br>";
+	//$qry = mysqli_query($connection, "INSERT INTO species(name,genus,comments,dangerous,species,Importance,UsedforAquaculture,image) VALUES('$name','$genus','$comments','$dangerous','$species','$importance','$usedForAquaculture','$images')");
+
+
 
 }
 

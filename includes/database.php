@@ -21,9 +21,9 @@ if(isset($_SESSION['id'])){
         mysqli_query($connection,"UPDATE users SET last_login=NOW() WHERE id='{$_SESSION['id']}' ");
     }
 }
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+error_reporting(0);
 ob_start()
 ?>
 

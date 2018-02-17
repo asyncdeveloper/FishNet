@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 <meta charset="utf-8">
@@ -11,6 +10,36 @@
 <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/main.css" rel="stylesheet">
 </head>
+<script src="assets/js/jquery.3.2.1.min.js"></script>
+<script>
+    function searchForSpecie(){
+        var result = document.getElementById('searchName').value;
+        $.ajax({
+            type: "POST",
+            url: "getSpecie.php",
+            data: {name : result},
+            success: function (response) {
+                response =JSON.parse(response);
+                console.log(response);
+                var len = response.length;
+                for( var i = 0; i<len; i++){
+                    var id          = response[i]['id'];
+                    var name        = response[i]['name'];
+                    var importance  = response[i]['importance'];
+                    var comment     = response[i]['comment'];
+                    var dang        = response[i]['dangerous'];
+                    var genus       = response[i]['genus'];
+                    var imageId     = response[i]['images'];
+                    var species     = response[i]['species'];
+                    var aqua        = response[i]['UsedforAquaculture'];
+                    //console.log(name,importance);
+                }
+            },
+            error: function () {
+            }
+        });
+    }
+</script>
 <body>
 	<!--main-->
 <section class="main">
@@ -29,8 +58,24 @@
           <div class="collapse navbar-collapse" id="myNavbar">
           <!-- <div> -->
             <ul class="nav navbar-nav  navbar-right">
-              <li><a href="register.php"><span class="glyphicon glyphicon-user"></span> <strong>Sign Up</strong> </a></li>
-              <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span><strong> Login</strong></a></li>
+                <?php
+                    require_once "includes/database.php";
+                    session_start();
+                    if(!isset($_SESSION['id'])):
+                ?>
+                          <li><a href="register.php"><span class="glyphicon glyphicon-user"></span> <strong>Sign Up</strong> </a></li>
+                          <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span><strong> Login</strong></a></li>
+                    <?php else: ?>
+                        <li>
+                            <a href="dashboard.php"><span class="glyphicon glyphicon-user"></span>
+                                <strong><?=ucwords($_SESSION['username'])?></strong> </a>
+                        </li>
+                        <li>
+                            <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span>
+                                <strong>Logout</strong> </a>
+                        </li>
+
+                    <?php endif; ?>
             </ul>
           </div>
         </div>
@@ -40,7 +85,7 @@
 
           <!--welcome-message-->
           <header class="welcome-message text-center">
-            <h1><span class="rotate">We Are Here to Help, Search For Your Preffered Fish</span></h1>
+            <h1><span class="rotate">We Are Here to Help, Search For Your Preferred Fish</span></h1>
           </header>
           <!--welcome-message end-->
 
@@ -50,9 +95,14 @@
               <div class="col-md-5 center-block col-sm-8 col-xs-11">
                 <form>
                   <div class="input-group">
-                    <input type="text" ng-model="name" class="form-control" placeholder="Name">
+                    <input type="text" ng-model="name" id="searchName" class="form-control" placeholder="Name">
                     <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default" value="Search" name="search">Search<i class="fa fa-search"></i></button>
+                    <button type="submit" class="btn btn-default" value="Search" name="search" onclick="searchForSpecie()">
+                        Search
+                        <i class="fa fa-search">
+
+                        </i>
+                    </button>
                     </span> </div>
                 </form>
                 <p id="angular-component" class="alert">I am looking for {{name}}</p>
