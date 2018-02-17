@@ -1,8 +1,6 @@
-<!doctype html>
-<html lang="en">
 <?php
 require_once "includes/database.php";
-
+session_start();
 if(isset($_POST['submit'])){
     $usernameOrEmail = $_POST['username'];
     $pass            = sha1($_POST['password']);
@@ -11,13 +9,15 @@ if(isset($_POST['submit'])){
         $user = mysqli_fetch_array($users);
         $_SESSION['id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
-        header('location: login.php?success');
+        header('Location: login.php?success');
     }else{
-        header("location: login.php?err=1");
+        header("Location: login.php?err=1");
     }
 }
+require_once "includes/head.php"; 
 ?>
-<?php require_once "includes/head.php"; ?>
+
+<html lang="en">
 <body>
 
 <div class="wrapper">

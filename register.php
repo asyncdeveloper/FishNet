@@ -1,5 +1,3 @@
-<!doctype html>
-<html lang="en">
 <?php
 require_once "includes/database.php";
 require_once "includes/head.php";
@@ -13,20 +11,21 @@ if(isset($_POST['submit'])){
     $type         = $_POST['type'];
     if($password!=$cpassword){
         $_SESSION['error'] = "Password must be equal";
-        header('location: register.php?err=1');
+        header('Location: register.php?err=1');
     }else{
         //Save to database
         $query = "INSERT INTO users(username,email,password,user_type,date_registered) VALUES ('$username','$email','$shaPass','$type',NOW())";
         $status = mysqli_query($connection,$query);
         if($status){
-            header('location: register.php?success');
+            header('Location: register.php?success');
         }else{
-            header('location: register.php?err=2');
+            header('Location: register.php?err=2');
         }
     }
 }
 ?>
-
+<!doctype html>
+<html lang="en">
 <body>
 
 <div class="wrapper">
