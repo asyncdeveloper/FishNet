@@ -1,4 +1,18 @@
-<!DOCTYPE html>
+<?php
+require_once "includes/database.php";
+session_start();
+if(empty($_SESSION['username']) || empty($_SESSION['id'])){
+    header("Location: login.php");
+}
+$loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
+if(empty($loggedInUser)){
+    header("Location: login.php");
+}
+//Get connected accepted invites
+$contactsResult = mysqli_query($connection,"SELECT * FROM invites WHERE status='1' AND (sender_id='{$_SESSION['id']}' OR reciepient_id='{$_SESSION['id']}' )");
+$numberOfContacts = mysqli_num_rows($contactsResult);
+
+?>
 <html>
 <head>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
@@ -7,20 +21,7 @@
     <link rel="stylesheet" href="assets/jGrowl-master/jquery.jgrowl.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
 </head>
-<?php
-require_once "includes/database.php";
-if(empty($_SESSION['username']) || empty($_SESSION['id'])){
-    header("location: login.php");
-}
-$loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
-if(empty($loggedInUser)){
-    header("location: login.php");
-}
-//Get connected accepted invites
-$contactsResult = mysqli_query($connection,"SELECT * FROM invites WHERE status='1' AND (sender_id='{$_SESSION['id']}' OR reciepient_id='{$_SESSION['id']}' )");
-$numberOfContacts = mysqli_num_rows($contactsResult);
 
-?>
 <script src="assets/js/jquery.3.2.1.min.js"></script>
 <script src="assets/js/timeago.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
