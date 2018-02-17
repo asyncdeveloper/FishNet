@@ -1,5 +1,6 @@
 <?php
 require_once "includes/database.php";
+session_start();
 if(true){
     $loggedInUser = $_SESSION['id'];
     $lastLoginTime = mysqli_fetch_array(mysqli_query(

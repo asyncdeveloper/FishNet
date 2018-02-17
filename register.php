@@ -10,16 +10,31 @@ if(isset($_POST['submit'])){
     $cpassword    = $_POST['cpassword'];
     $type         = $_POST['type'];
     if($password!=$cpassword){
-        $_SESSION['error'] = "Password must be equal";
-        header('Location: register.php?err=1');
+        $msg= 'Oops passwords not equal';
+        header("Location: register.php?err=$msg");
     }else{
+        $checkEmail = mysqli_num_rows(mysqli_query($connection,"SELECT email from users WHERE email='$email'"));
+        $checkEmail = (int)$checkEmail;
+        if($checkEmail>0){
+            $msg= 'Email account already exist';
+            header("Location: register.php?err=$msg");
+        }
+        $checkUsername = mysqli_num_rows(mysqli_query($connection,"SELECT username from users WHERE username='$username'"));
+        $checkUsername = (int)$checkUsername;
+        if($checkUsername>0){
+            $msg= 'Username already exist';
+            header("Location: register.php?err=$msg");
+        }
+
+        die(1);
         //Save to database
         $query = "INSERT INTO users(username,email,password,user_type,date_registered) VALUES ('$username','$email','$shaPass','$type',NOW())";
         $status = mysqli_query($connection,$query);
         if($status){
             header('Location: register.php?success');
         }else{
-            header('Location: register.php?err=2');
+            $msg= 'Oops unable to connect to server kindly try again';
+            header("Location: register.php?err=$msg");
         }
     }
 }
@@ -46,15 +61,9 @@ if(isset($_POST['submit'])){
                             <div class="content">
                                 <form action="register.php" method="POST">
                                     <?php if(isset($_REQUEST['err'])): ?>
-                                        <?php if($_REQUEST['err']='1'): ?>
                                             <div class="alert alert-danger">
-                                                <?php echo  "Password must be equal "; ?>
+                                                <?php echo  $_REQUEST['err']; ?>
                                             </div>
-                                        <?php elseif($_REQUEST['err']='2'): ?>
-                                            <div class="alert alert-danger">
-                                                <?php echo  "Cannot save, check network status "; ?>
-                                            </div>
-                                        <?php endif; ?>
                                     <?php elseif (isset($_REQUEST['success'])): ?>
                                         <div class="alert alert-success">
                                             <?php echo  "Account Created Successfully, Redirecting ..."; ?>

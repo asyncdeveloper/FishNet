@@ -1,5 +1,6 @@
 <?php
 require_once "includes/database.php";
+session_start();
 if(!empty($_POST)){
     //$currentTime = "2018-02-15 19:49:41";
     //$lastLogin   = "2018-02-15 14:43:37";
