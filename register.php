@@ -1,7 +1,7 @@
 <?php
 require_once "includes/database.php";
 require_once "includes/head.php";
-
+session_start();
 if(isset($_POST['submit'])){
     $username     = $_POST['username'];
     $email        = $_POST['email'];
@@ -24,9 +24,7 @@ if(isset($_POST['submit'])){
         if($checkUsername>0){
             $msg= 'Username already exist';
             header("Location: register.php?err=$msg");
-        }
-
-        die(1);
+        }       
         //Save to database
         $query = "INSERT INTO users(username,email,password,user_type,date_registered) VALUES ('$username','$email','$shaPass','$type',NOW())";
         $status = mysqli_query($connection,$query);
@@ -78,7 +76,7 @@ if(isset($_POST['submit'])){
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Email</label>
-                                                <input type="email" class="form-control" placeholder="Researcher" name="email" required minlength="6" id="email" />
+                                                <input type="email" class="form-control" placeholder="me@example.com" name="email" required minlength="6" id="email" />
                                             </div>
                                         </div>
                                     </div>

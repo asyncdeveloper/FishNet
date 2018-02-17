@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.0
+-- version 4.7.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 16, 2018 at 06:00 PM
--- Server version: 10.1.25-MariaDB
--- PHP Version: 5.6.31
+-- Generation Time: Feb 17, 2018 at 05:16 PM
+-- Server version: 10.1.29-MariaDB
+-- PHP Version: 7.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -48736,14 +48736,36 @@ INSERT INTO `messages` (`id`, `message`, `sender`, `receiver`, `time_sent`, `sta
 
 CREATE TABLE `species` (
   `id` int(10) UNSIGNED NOT NULL,
-  `author` varchar(100) NOT NULL,
-  `year` int(4) UNSIGNED NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `genus` varchar(100) NOT NULL,
   `comments` text NOT NULL,
-  `length` int(10) UNSIGNED NOT NULL,
-  `Saltwater` int(1) UNSIGNED NOT NULL,
+  `dangerous` varchar(100) NOT NULL,
+  `species` varchar(100) NOT NULL,
   `Importance` varchar(100) NOT NULL,
-  `UsedforAquaculture` int(1) UNSIGNED NOT NULL
+  `UsedforAquaculture` varchar(100) NOT NULL,
+  `image` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `species`
+--
+
+INSERT INTO `species` (`id`, `name`, `genus`, `comments`, `dangerous`, `species`, `Importance`, `UsedforAquaculture`, `image`) VALUES
+(1, 'Albacore', 'Thunnus', 'An epipelagic and mesopelagic, oceanic species, abundant in surface waters of 15.6Â° to 19.4Â°C; deeper swimming, large albacore are found in waters of 13.5Â° to 25.2Â°C; temperatures as low as 9.5Â°C may be tolerated for short periods (Ref. 168).  Known to concentrate along thermal discontinuities (Ref. 168).  Form mixed schools with skipjack tuna (<i>Katsuwonus pelamis</i>), yellowfin tuna (<i>Thunnus albacares</i>) and bluefin tuna (<i>T. maccoyii</i>), schools may be associated with floating objects, including sargassum weeds (Ref. 168).  Feed on fishes, crustaceans and squids.  Eggs and larvae are pelagic (Ref. 6769).  Sexual maturity reached at 90 cm (Ref. 36731).  Highly appreciated and marketed fresh, smoked, deep frozen or canned.  Eaten steamed, broiled, fried and microwaved (Ref. 9987).  Also Ref. 1762, 1798, 1804.\r\nAngling: Largely caught offshore, where the waters are mild and blue.  Albacore favor those areas where cooler water interfaces with warmer water.  They are caught with live of dead baitfish such as mullet, sauries, squid, herring, anchovies, sardines, and other small fish.  Albacore strike hard and make powerful runs (Ref. 84357).', 'harmless', 'alalunga', 'highly commercial', 'never/rarely', 'Fishes/Albacore.jpg'),
+(2, 'Atlantic cod', 'Gadus', 'Widely distributed in a variety of habitats, from the shoreline down to the continental shelf. Juveniles prefer shallow (less than 10-30 m depth) sublittoral waters with complex habitats, such as seagrass beds, areas with gravel, rocks, or boulder, which provide protection from predators (Refs. 89383, 89384). Adults are usually found in deeper, colder waters. During the day, form schools and swim about 30-80 m above the bottom, dispersing at night to feed (Ref. 1371, 89385). Omnivorous; feed at dawn or dusk on invertebrates and fish, including young cod. (Ref. 1371). Migrate between spawning, feeding and overwintering areas, mostly within the boundaries of the respective stocks. Migrations >200 km are rare occurrences (Refs. 89386, 89387). Marketed fresh, dried or salted, smoked and frozen; eaten steamed, fried, broiled, boiled, microwaved and baked (Ref. 9988).', 'harmless', 'morhua', 'highly commercial', 'commercial', 'Fishes/Atlantic cod.jpg'),
+(3, 'False black tetra', 'Gymnocorymbus', '', 'harmless', 'thayeri', '', '', 'Fishes/False black tetra.jpg'),
+(4, 'Gilded catfish', 'Zungaro', 'Specimens measuring 130 cm and weighing 50 kg are not rare.  In the Amazon, this fish is found quite upstream, in the main bed of the big tributaries with muddy bottom (Ref. 35381).  Mainly piscivorous, hunts at night, sometimes going into flood prone areas of rivers.  Some migrations in pursuit of migrating <i>Triportheus</i> and <i>Anodus</i> have been reported.  Sexually mature upon reaching 10 kg weight.  The nursery ground is at the river mouths (Ref. 35381).', 'harmless', 'zungaro', 'minor commercial', 'never/rarely', 'Fishes/Gilded catfish.jpg'),
+(5, 'Chinook salmon', 'Oncorhynchus', 'Adults return to natal streams from the sea  to spawn (Ref. 27547).  Fry may migrate to the sea after only 3 months in fresh water, some may stay for as long as 3 years, but generally most stay a year in the stream before migrating (Ref. 27547).  Some individuals remain close inshore throughout their lives, but some make extensive migrations (Ref. 27547, 44894).  Also found in lakes (Ref. 1998).  Possibly up to 375 m depth (Ref. 6793).  Epipelagic (Ref. 58426).  Food in streams is mainly terrestrial insects and small crustaceans; in the sea, major food items include fishes, crustaceans, and other invertebrates (Ref. 27547).  Young are preyed upon by fishes and birds (such as mergansers and kingfishers); adults are prey of large mammals and large birds (Ref. 1998).  Highly regarded game fish (Ref. 27547).  Flesh is usually red, but some are white; the red meat commands a higher price (Ref. 27547).  Marketed fresh, smoked, frozen, and canned.  Eaten steamed, fried, broiled, boiled, microwaved, and baked (Ref. 9988).  Viscera said to contain high vitamin A content and used successfully as food for hatchery fish (Ref. 28971, 28977).', 'potential pest', 'tshawytscha', 'highly commercial', 'commercial', 'Fishes/Chinook salmon.jpg'),
+(6, 'Guppy', 'Poecilia', 'Inhabits warm springs and their effluents, weedy ditches and canals (Ref. 5723).  Found in various habitats, ranging from highly turbid water in ponds, canals and ditches at low elevations to pristine mountain streams at high elevations (Ref. 11225).  Occurs in wide variety of habitats with low predation pressure, usually in very small streams and densely vegetated lakes and springs (Ref. 59043).  Has a wide salinity range but requires fairly warm temperatures (23-24 Â°C) and quiet vegetated water for survival (Ref. 7248, 44894, 79840).  Feeds on zooplankton, small insects and detritus.  One of the most popular aquarium fishes with many standardized varieties.  Used in genetics research.  Female reaches 5 cm SL (Ref. 2847).  Males mature at 2 months and females at 3 months of age (Ref. 1672).  Aquarium keeping:  in groups of 5 or more individuals; minimum aquarium size 60 cm (Ref. 51539).  A very popular and widely available species in the aquarium trade.  In Australia, wild populations were established prior to the 1970s, undoubtedly the result of thoughtless aquarists discarding unwanted pets (Ref. 44894).  Maximum length for female taken from Ref. 43281.', 'potential pest', 'reticulata', 'of no interest', 'never/rarely', 'Fishes/Guppy.jpg'),
+(7, 'Haddock', 'Melanogrammus', 'Adults are found more commonly from 80 to 200 m, over rock, sand, gravel or shells, usually at temperatures between 4Â° and 10Â°C.  Feed mainly on small bottom-living organisms including crustaceans, mollusks, echinoderms, worms and fishes (sand lance, capelin, silver hake, American eels, herring and argentines) (Ref. 5951).  A batch spawner (Ref. 51846).  Undertakes extensive migrations in the Barents Sea and Iceland.  Sold fresh, chilled as fillets, frozen, smoked and canned.  Also utilized for fish meal and animal feeds.  Can be steamed, fried, broiled, boiled, microwaved and baked (Ref. 9988).', 'harmless', 'aeglefinus', 'highly commercial', 'experimental', 'Fishes/Haddock.jpg'),
+(8, 'Common dolphinfish', 'Coryphaena', 'Adults are found in open waters but also near the coast (Ref. 9293, 11230).  Form schools.  Feed on almost all  forms of fish and zooplankton; also takes crustaceans and squid (Ref. 2850).  Sexual maturity is reached in 4-5 months (3 for captive fish) (Ref. 11441).  Spawn in the open sea and probably approximate to the coast when water temperature rises (Ref. 9293).  Eggs and larvae are pelagic (Ref. 6755).  Attracting devices such as floating bundles of bamboo reeds or cork planks are used to concentrate dolphin fish before the nets are set.  Marketed frozen (Ref. 9987) and fresh and is of high value (Ref. 9293).', 'reports of ciguatera poisoning', 'hippurus', 'highly commercial', 'commercial', 'Fishes/Common dolphinfish.jpg'),
+(9, 'Green neon tetra', 'Paracheirodon', '', 'harmless', 'simulans', '', '', 'Fishes/Green neon tetra.jpg'),
+(10, 'Northern pike', 'Esox', 'Occurs in clear vegetated lakes, quiet pools and backwaters of creeks and small to large rivers (Ref. 5723).  Usually solitary and highly territorial.  Enters brackish water in the Baltic.  Adults feed mainly on fishes, but at times feed heavily on frogs and crayfish (Ref. 27547).  Cannibalism is common.  In arctic lakes, it is sometimes the only species present in a given water body.  In such cases, juveniles feed on invertebrates and terrestrial vertebrates; large individuals are mainly cannibals (Ref. 59043). Cannibalistic as juveniles (Ref. 30578).  Feces of pike are avoided by other fish because they contain alarm pheromones.  Deposits feces at specific locations, distant from its foraging area (Ref. 59043).  Eggs and young are preyed upon by fishes, aquatic insect larvae, birds, and aquatic mammals (Ref. 1998).  Does not generally undertake long migrations, but a few may move considerable distances (Ref. 27547).  Oviparous (Ref. 205). This fish can be heavily infested with parasites, including the broad tapeworm which, if not killed by thorough cooking, can infect human; is used as an intermediate host by a cestode parasite which results to large losses in usable catches of lake whitefish (<i>Coregonus clupeaformis</i>) in some areas; also suffers from a trematode which causes unsightly cysts on the skin (Ref. 9988).  Excellent food fish; utilized fresh and frozen; eaten pan-fried, broiled, and baked (Ref. 9988).  Valuable game fish (Ref. 5723).  In spite of numerous attempts to culture this species, it was never entirely domesticated and does not accept artificial food (Ref. 30578).  Locally impacted by habitat alterations (Ref. 59043).', 'potential pest', 'lucius', 'highly commercial', 'commercial', 'Fishes/Northern pike.jpg'),
+(11, 'Striped bass', 'Morone', 'Inhabit coastal waters and are commonly found in bays but may enter rivers in the spring to spawn (Ref. 2850).  Some populations are landlocked (Ref. 7251).  Voracious and opportunistic feeder (Ref. 5951).  Larvae feed on zooplankton; juveniles take in small shrimps and other crustaceans, annelid worms, and insects (Ref. 1998, 10294); adults feed on a wide variety of fishes (alewives, herring, smelt, eels, flounders, mummichogs, rock gunnels, sand lance, silver hake and silversides (Ref. 5951)) and invertebrates (squid, crabs, sea worms and amphipods (Ref. 5951)), mainly crustaceans (Ref. 1998).  Feeding ceases shortly before spawning (Ref. 1998).  Utilized fresh and eaten broiled and baked (Ref. 9988).', 'harmless', 'saxatilis', 'minor commercial', 'commercial', 'Fishes/Striped bass.jpg'),
+(12, 'Blue tilapia', 'Oreochromis', 'Cold tolerant (Ref. 23, 61, 55352), occuring at temperatures ranging from 8Â°-30Â°C (Ref. 2), tolerating up to 41 Â°C (Ref. 23). Tolerates fairly brackish conditions (Ref. 3, 23, 61, 2001, 6465, 54362). Forms schools; is sometimes territorial; inhabits warm ponds and impoundments as well as lakes and streams (Ref. 5723, 11028), in open water as well as among stones and vegetation (Ref. 11028). Feeds on phytoplankton and small quantities of zooplankton (Ref. 3, 61, 6465, 52307). Young fish have a more varied diet which includes large quantities of copepods and cladocerans (Ref. 2, 61, 6465), but they also take pieces of small invertebrates (Ref. 52307). Ovophilic, agamous (Ref. 52307), maternal mouthbrooder (Ref. 364, 52307). Sexual maturity in ponds reached at age of 5-6 months (Ref. 55352). Reproduces in both fresh and brackish water (Ref. 61, 5723). Good taste (Ref. 61).', 'potential pest', 'aureus', 'highly commercial', 'commercial', 'Fishes/Blue tilapia.jpg'),
+(13, 'Wahoo', 'Acanthocybium', 'An oceanic, epipelagic species frequently solitary or forming small loose aggregations rather than compact schools.  Feed on fishes and squids. Eggs and larvae are pelagic (Ref. 6769).   An important sport fish in some areas (Ref. 9340).  Marketed fresh, salted or spice-cured slices of meat; also frozen (Ref. 9987).  Flesh of very good quality (Ref. 9684). Minimum depth from Ref. 005227.', 'reports of ciguatera poisoning', 'solandri', 'commercial', 'never/rarely', 'Fishes/Wahoo.jpg'),
+(14, 'Walleye', 'Sander', 'Occurs in lakes, pools, backwaters, and runs of medium to large rivers.  Prefers large, shallow lakes with high turbidity (Ref. 9988, 10294).  Feeds at night, mainly on insects and fishes (prefers yellow perch and freshwater drum but will take any fish available) but feeds on crayfish, snails, frogs, mudpuppies, and small mammals when fish and insects are scarce (Ref. 1998).  Although not widely farmed commercially for consumption, large numbers are hatched and raised for stocking lakes for game fishing (Ref. 9988).  Utilized fresh or frozen; eaten pan-fried, broiled, microwaved and baked (Ref. 9988).', 'harmless', 'vitreus', 'commercial', 'experimental', 'Fishes/Walleye.jpg'),
+(15, 'Yellowfin tuna', 'Thunnus', 'An oceanic species occurring above and below the thermoclines.  Pelagic in open water , but rarely seen near reefs (Ref. 48637).  They school primarily by size, either in monospecific or multi-species groups.  Larger fish frequently school with porpoises, also associated with floating debris and other objects.  Feed on fishes, crustaceans and squids.  It is sensitive to low concentrations of oxygen and therefore is not usually caught below 250 m in the tropics (Ref. 28952, 30329).  Peak spawning occurs during the summer, in batches (Ref. 9684, 51846).  Eggs and larvae are pelagic (Ref. 6769).  Encircling nets are employed to catch schools near the surface (Ref. 9340).  Marketed mainly  frozen and canned (Ref. 9684), but also fresh (Ref. 9340) and smoked (Ref. 9987).  Highly valued for sashimi (Ref. 26938).', 'harmless', 'albacares', 'highly commercial', 'experimental', 'Fishes/Yellowfin tuna.jpg');
 
 -- --------------------------------------------------------
 
@@ -52911,18 +52933,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `username`, `first_name`, `last_name`, `email`, `image`, `password`, `country`, `state`, `city`, `address`, `about_me`, `postal_code`, `species`, `user_type`, `date_registered`, `last_login`) VALUES
-(1, 'sheyisssss', 'Oluwaseyi', 'Samuel', 'sheyilaaw98@gmail.com', NULL, 'df1f1fc350f3d874ecf0eb1478e316fa82221466', 160, 2671, 30981, '7 abeke bello Street okiki bus stop', 'About ', 100001, 'mackrel,titus', 'fisher', '2018-02-10 15:08:38', '2018-02-16 16:59:08'),
-(2, 'sheyi', 'Sheyi', 'Adeogun', 'Oluwaseyisam@outlook.com', 'profile_photo/1518335728.png', '7c4a8d09ca3762af61e59520943dc26494f8941b', 160, 2675, 31035, '7 abeke bello Street okiki bus stop', 'About meAbout meAbout meAbout meAbout me', 100001, 'kote,catfish', 'researcher', '2018-02-10 15:13:12', '2018-02-16 14:33:08'),
-(4, 'kunleAfolayan', 'Kunle', 'Afolayan', 'sammie@mailinator.com', NULL, '7c4a8d09ca3762af61e59520943dc26494f8941b', 160, 2649, 30699, '7 abeke bello Street okiki bus stop', '', 100001, 'Shark,Mackrel', 'researcher', '2018-02-11 12:41:47', '2018-02-16 15:17:57'),
-(5, 'kunlekunle', 'Kunle', 'Afolayan', 'ssssammie@mailinator.com', 'profile_photo/1518515533.jpg', '7c4a8d09ca3762af61e59520943dc26494f8941b', 160, 2675, 31028, 'Agbede', '', 100001, 'titus', 'fisher', '2018-02-11 12:41:47', '2018-02-16 15:20:28'),
-(7, 'sammiie', 'Samuel', 'Adeogun', 'ssssheyilaaw98@gmail.com', NULL, '7c4a8d09ca3762af61e59520943dc26494f8941b', 160, 2671, 30981, '7 abeke bello Street okiki bus stop', '', 100001, 'titus,shark', 'researcher', '2018-02-11 15:11:54', '2018-02-16 15:21:11'),
-(8, 'mikeAfrican', 'Adeogun', 'Samuel', 'mike@example.com', NULL, '7c4a8d09ca3762af61e59520943dc26494f8941b', 160, 2671, 30981, '', '', 0, 'mackrel guppy titus pepperfish tomatofish shark lemur contourfish croaker', 'fisher', '2018-02-11 15:51:59', '2018-02-16 15:17:10');
-
---
 -- Indexes for dumped tables
 --
 
@@ -52977,36 +52987,43 @@ ALTER TABLE `users`
 --
 ALTER TABLE `cities`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48315;
+
 --
 -- AUTO_INCREMENT for table `countries`
 --
 ALTER TABLE `countries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=247;
+
 --
 -- AUTO_INCREMENT for table `invites`
 --
 ALTER TABLE `invites`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+
 --
 -- AUTO_INCREMENT for table `species`
 --
 ALTER TABLE `species`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
 --
 -- AUTO_INCREMENT for table `states`
 --
 ALTER TABLE `states`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4121;
+
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;COMMIT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

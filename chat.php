@@ -121,7 +121,14 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                 </ul>
             <?php endif; ?>
         </div>
+<<<<<<< HEAD
 
+=======
+        <div id="bottom-bar">
+            <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
+            <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
+        </div>
+>>>>>>> 29423628b0798c0a0a0156b1a893c193ca1f1b7e
     </div>
     <div class="content">
         <div class="contact-profile" id="header-user-info">
