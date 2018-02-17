@@ -6,6 +6,16 @@ defined('DB_PASS')   ? null : define('DB_PASS', 'nbvhgfytrm');
 defined('DB_NAME')   ? null : define('DB_NAME', 'hackernest');
 $connection = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME) or die("Error Connecting to Database");
 
+function sendMail($to,$subject,$message){
+    $headers  = "From: FishNet < fishnetib@co>\n";
+    $headers .= "X-Sender: testsite < mail@domain.com >\n";
+    $headers .= 'X-Mailer: PHP/' . phpversion();
+    $headers .= "X-Priority: 1\n"; // Urgent message!
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=iso-8859-1\n";
+    mail($to,$subject,$message,$headers);
+}
+
 if(isset($_SESSION['id'])){
     if(intval($_SESSION['id'])){
         mysqli_query($connection,"UPDATE users SET last_login=NOW() WHERE id='{$_SESSION['id']}' ");

@@ -1,5 +1,6 @@
 <?php
 require_once "includes/database.php";
+session_start();
 if(!empty($_POST['id'])){
     $id = $_POST['id'];
     $userInfo = mysqli_fetch_assoc(mysqli_query($connection,"SELECT * FROM users WHERE id='$id'"));

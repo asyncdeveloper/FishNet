@@ -19,12 +19,18 @@ if(isset($_POST['submit'])){
     $address        = $_POST['address'];
     $aboutMe        = $_POST['about_me'];
     $species        = $_POST['species'];
+    $email          = $_POST['emailadd'];
 
     $status = mysqli_query($connection,"UPDATE users SET 
     username='$username',first_name='$firstname',last_name='$lastname',
     species='$species',country='$country',state='$state',city='$city',address='$address'
     ,about_me='$aboutMe' WHERE id='{$_SESSION['id']}' ");
     if($status){
+        $message = "
+                Hello, $username You have successfully updated your profile . \n                  
+            ";
+        ///Send Mail
+        sendMail($email,"Profile Update",$message);
         header("Location: user.php?success");
     }
 }
@@ -64,6 +70,7 @@ require_once "includes/head.php";
                                 <?php endif; ?>
 
                                 <form action="<?=$_SERVER['PHP_SELF']?>" method="POST" onkeypress="return event.keyCode != 13;">
+                                    <input type="hidden" name="emailadd" value="<?=$loggedInUser['email']?>">
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -236,9 +243,7 @@ require_once "includes/head.php";
                             </div>
                             <hr>
                             <div class="text-center">
-                                <button href="#" class="btn btn-simple"><i class="fa fa-facebook-square"></i></button>
-                                <button href="#" class="btn btn-simple"><i class="fa fa-twitter"></i></button>
-                                <button href="#" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>
+
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 <?php
 require_once "includes/database.php";
+session_start();
 if(!empty($_POST['id'])){
     $receiver = $_POST['id'];
     $loggedInUser = $_SESSION['id'];

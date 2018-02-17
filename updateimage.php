@@ -1,5 +1,6 @@
 <?php
 require_once "includes/database.php";
+session_start();
 $files = $_FILES;
 if(!empty($files)) {
     foreach ($files as $file) {

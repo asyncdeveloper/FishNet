@@ -15,6 +15,25 @@ if(isset($_REQUEST['status']) && isset($_REQUEST['sid']) && isset($_REQUEST['rid
     $rid    = $_REQUEST['rid'];
     $update =mysqli_query($connection,"UPDATE invites SET status='$status' WHERE sender_id='$sid' AND reciepient_id='$rid'");
     if($update){
+        $senderUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$sid' "));
+        $senderUsername  =$senderUser['username'];
+        $senderEmail    = $senderUser['email'];
+        //receiver of request
+        $receiverUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$rid' "));
+        $receiverUsername  =$receiverUser['username'];
+        $receiverEmail     = $receiverUser['email'];
+        $message = "
+                Hello, $senderUsername Your request sent to $receiverUsername as been accepted. \n
+                You can now start communicating.                  
+            ";
+        ///Send Mail to sender
+        sendMail($senderEmail,"Invite Accepted",$message);
+        $message = "
+                Hello, $receiverUsername You have accepted request from $senderUsername  \n
+                You can now start communicating.                                    
+            ";
+        ///Send Mail to receiver
+        sendMail($receiverEmail,"Invite Received",$message);
         header("Location: invitereceived.php");
     }
 }

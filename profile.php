@@ -46,6 +46,25 @@ if(isset($_POST['submit'])){
     //Save to database
     $status = mysqli_query($connection,"INSERT INTO invites(sender_id,reciepient_id) VALUES('$senderId','$recipientId')");
     if($status){
+        //sender of request
+        $senderUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$senderId' "));
+        $senderUsername  =$senderUser['username'];
+        $senderEmail    = $senderUser['email'];
+        //receiver of request
+        $receiverUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$recipientId' "));
+        $receiverUsername  =$receiverUser['username'];
+        $receiverEmail     = $receiverUser['email'];
+        $message = "
+                Hello, $senderUsername You have successfully sent an invite request to $receiverUsername. \n                  
+            ";
+        ///Send Mail to sender
+        sendMail($senderEmail,"Invite Sent",$message);
+        $message = "
+                Hello, $receiverUsername You have successfully received an invite request from $senderEmail. \n                  
+            ";
+        ///Send Mail to receiver
+        sendMail($receiverEmail,"Invite Received",$message);
+
         header("Location: profile.php?id=$recipientId&success");
     }
 }
@@ -166,7 +185,7 @@ require_once "includes/head.php";
                                     <?php else: ?>
                                         <p>Unknown</p>
                                 <?php endif; ?>
-                                <br><br><br><br>
+                                <br><br>
                                     <div class="clearfix"></div>
 
                                     <?php if(isset($_REQUEST['success'])): ?>
@@ -217,10 +236,7 @@ require_once "includes/head.php";
                                                 <button name="submit" type="submit" class="btn btn-warning btn-fill" >Request Pending</button>
                                             <?php endif; ?>
 
-                                        <?php
-
-                                        endif;
-                                    ?>
+                                        <?php endif; ?>
 
                                     <?php else: ?>
                                             <button name="submit" type="submit" class="btn btn-danger btn-fill">Cannot Invite No Connection Found</button>
@@ -260,9 +276,7 @@ require_once "includes/head.php";
                             </div>
                             <hr>
                             <div class="text-center">
-                                <button href="#" class="btn btn-simple"><i class="fa fa-facebook-square"></i></button>
-                                <button href="#" class="btn btn-simple"><i class="fa fa-twitter"></i></button>
-                                <button href="#" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>
+
                             </div>
                         </div>
                     </div>
