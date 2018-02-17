@@ -8,10 +8,12 @@
    Global Styles
 -------------------------------------------------------------------------------*/
 
-
+.textBig{
+	font-size: 25px !important;
+}
 body {
 	font-family: "Source Sans Pro";
-	font-weight: 300;
+	font-weight: 500;
 	font-size:13px;
 	letter-spacing:1px;
 	line-height:1.8em;

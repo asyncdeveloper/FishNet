@@ -31,7 +31,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 <body>
 <div id="jGrowl-container1" class="jGrowl top-right"></div>
 <div id="frame">
-    <div id="topHeader">
+    <!-- <div id="topHeader">
         <div id="h1header">
                 <ul>
                     <li>FishNet</li>
@@ -43,7 +43,8 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                 <a href="logout.php"><li>Logout</li></a>
             </ul>
         </div>
-    </div>
+    </div> -->
+    <?php require_once "includes/headerChat.php"; ?>
     <div id="sidepanel">
         <div id="profile">
             <div class="wrap">
@@ -120,9 +121,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                 </ul>
             <?php endif; ?>
         </div>
-        <div id="bottom-bar">
 
-        </div>
     </div>
     <div class="content">
         <div class="contact-profile" id="header-user-info">

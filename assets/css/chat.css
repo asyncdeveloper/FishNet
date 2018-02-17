@@ -11,6 +11,7 @@ body {
     text-rendering: optimizeLegibility;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
     -webkit-font-smoothing: antialiased;
+    background-image: url(assets/img/aqua1.jpg) !important;
 }
 
 #frame {
@@ -20,7 +21,8 @@ body {
     height: 92vh;
     min-height: 300px;
     max-height: 720px;
-    background: #E6EAEA;
+
+    /*#E6EAEA;*/
 }
 @media screen and (max-width: 360px) {
     #frame {

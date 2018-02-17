@@ -9,6 +9,7 @@
 <meta name="description" content="Find any fish profiles / details">
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/main.css" rel="stylesheet">
 </head>
 <body>
@@ -70,50 +71,68 @@
 
           <section class="features section-spacing">
             <div class="container">
-              <h2 class="text-center">EXPLORE OUR FISHES COLLECTION</h2>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="wow fadeInUp product-features row">
-                    <div class="col-md-2 col-sm-2 col-xs-2 text-center"></div>
-                    <div class="col-md-10 col-sm-10 col-xs-10">
-                      <!--fish 3-->
-                      <h4>Blue Whale</h4>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
-                      <!--fish 3 end-->
-                    </div>
-                  </div>
-                  <div class="wow fadeInUp product-features row">
-                    <div class="col-md-2 col-sm-2 col-xs-2 text-center"></div>
-                    <div class="col-md-10 col-sm-10 col-xs-10">
-                      <!--fish 4-->
-                      <h4>Tilapia</h4>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
-                      <!--fish 4 end-->
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="wow fadeInUp product-features row">
-                    <div class="col-md-2 col-sm-2 col-xs-2 text-center"></div>
-                    <div class="col-md-10 col-sm-10 col-xs-10">
-                      <!--fish 3-->
-                      <h4>Crockel</h4>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
-                      <!--fish 3 end-->
-                    </div>
-                  </div>
-                  <div class="wow fadeInUp product-features row">
-                    <div class="col-md-2 col-sm-2 col-xs-2 text-center"></div>
-                    <div class="col-md-10 col-sm-10 col-xs-10">
-                      <!--fish 4-->
-                      <h4>Shark</h4>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit, beatae, esse, aspernatur, alias odio numquam incidunt perspiciatis aliquid voluptate sapiente.</p>
-                      <!--fish 4 end-->
-                    </div>
+              <div id="displaySearchResult" class="textBig">
+                <h2 class="text-center">Result</h2>
+                <div class="row">
+                  <div class="col-md-12">
+                    <h1 id="name"></h1>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>Name</td>
+                          <td id="name"></td>
+                        </tr>
+                        <tr>
+                          <td>Description</td>
+                          <td id="comments"></td>
+                        </tr>
+                        <tr>
+                          <td>Genius</td>
+                          <td id="genius"></td>
+                        </tr>
+                        <tr>
+                          <td>Dangerous</td>
+                          <td id="dangerous"></td>
+                        </tr>
+                        <tr>
+                          <td>Species</td>
+                          <td id="species"></td>
+                        </tr>
+                        <tr>
+                          <td>Used For Aquaculture</td>
+                          <td id="usedForAquaculture"></td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
+            <div class="row">
+              <div class="col-md-12 wow fadeInUp product-features row textBig">
+                    <h1>About Us&nbsp <i class="fa fa-info"></i></h1>
+                    <p>
+                      The FishNET is a knowledge sharing platform with premium news, analysis and resources for the aquaculture and commercial fishing industries. I
+                      Our international team of contributors are guided by our vision for aquaculture, reporting on the economics, environment and ethics of contemporary food chain challenges. We challenge the status quo to create understanding, opportunity and innovation for both user.
+                    </p>
+              </div>
             </div>
+              <div class="row">
+              <div class="col-md-12 wow fadeInUp product-features row textBig">
+                      <h1>AIM&nbsp <i class="fa fa-bullseye"></i></h1>
+                      <p>
+                        As the world wrestles with the challenge of feeding a vast and growing population, there is an urgent need to professionalise and modernise aquaculture. Oceans cover 70 percent of the world’s surface, but only produce two percent of our food, making the aquaculture industry the fastest growing form of protein production. It helps to control the mortality rate of fishes due to knowledge acquired from the platform  and also lead to new discovery of fishes.
+                      </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 wow fadeInUp product-features row textBig">
+                <h1>Statistic&nbsp <i class="fas fa-chart-line"></i></h1>
+                <p>
+                  According to the Food and Agriculture Organization (FAO), the world harvest  in 2005 consisted of 93.3 million tonnes captured by commercial fishing in wild fisheries, plus 48.1 million tonnes produced by fish farms. In addition, 1.3 million tons of aquatic plants (seaweed etc.) were captured in wild fisheries and 14.8 million tons were produced by aquaculture.The number of individual fish caught in the wild has been estimated at 0.97-2.7 trillion per year (not counting fish farms or marine invertebrates).
+                </p>
+              </div>
+              </div>
+              </div>
           </section>
 
           <!--Fishes collection end-->
