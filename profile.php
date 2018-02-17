@@ -1,13 +1,12 @@
-<!doctype html>
-<html lang="en">
 <?php
 require_once "includes/database.php";
+session_start();
 if(empty($_SESSION['username']) || empty($_SESSION['id'])){
-    header("location: login.php");
+    header("Location: login.php");
 }
 $loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
 if(empty($loggedInUser)){
-    header("location: login.php");
+    header("Location: login.php");
 }
 function checkIfMatches($currentPageUserId,$loggedInUser,$connection){
     $currentUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$currentPageUserId' "));
@@ -34,9 +33,9 @@ function checkIfMatches($currentPageUserId,$loggedInUser,$connection){
 if(isset($_REQUEST['id'])){
     $id = $_REQUEST['id'];
     if(!intval($id))
-        header("location: dashboard.php");
+        header("Location: dashboard.php");
     elseif ($id==$_SESSION['id'])
-        header("location: dashboard.php");
+        header("Location: dashboard.php");
     else{
         $result = checkIfMatches($id,$loggedInUser,$connection);
     }
@@ -47,11 +46,33 @@ if(isset($_POST['submit'])){
     //Save to database
     $status = mysqli_query($connection,"INSERT INTO invites(sender_id,reciepient_id) VALUES('$senderId','$recipientId')");
     if($status){
-        header("location:profile.php?id=$recipientId&success");
+        header("Location: profile.php?id=$recipientId&success");
     }
 }
 
 $currentUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * FROM users WHERE id='$id' "));
+$country =  $currentUser['country'];
+//Fetch country Name
+if($country){
+    $countryName    = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM countries WHERE id='$country'"));
+    $countryName    = array_shift($countryName);
+}else
+    $countryName    = "Unknown";
+//Fetch StateName
+$state   =  $currentUser['state'];
+if($state){
+    $stateName      = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM states WHERE id='$state'"));
+    $stateName      = array_shift($stateName);
+}else
+    $stateName      = "Unknown";
+//Fetch City Name
+$city    =  $currentUser['city'];
+if($city){
+    $cityName      = mysqli_fetch_array(mysqli_query($connection,"SELECT name FROM cities WHERE id='$city'"));
+    $cityName      = array_shift($cityName);
+}else
+    $cityName      = "Unknown";
+
 require_once "includes/head.php";
 ?>
 <body>
@@ -74,16 +95,6 @@ require_once "includes/head.php";
                                 <h4 class="title text-center">User Profile</h4>
                             </div>
                             <div class="content">
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>Username </label>
-                                                <p><?=$currentUser ['username']?></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -103,32 +114,35 @@ require_once "includes/head.php";
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Country</label>
-                                                <p><?=($currentUser ['country']) ? $currentUser ['country'] : "Unknown" ?></p>
+                                                <p><?php echo $countryName; ?></p>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>City</label>
-                                                <p><?=($currentUser ['city']) ? $currentUser ['city'] : "Unknown" ?></p>
+                                                <label>State</label>
+                                                <p><?php echo $stateName; ?></p>
                                             </div>
                                         </div>
                                     </div>
 
-
                                     <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>City</label>
+                                                <p><?php echo $cityName; ?></p>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Address</label>
                                                 <p><?=($currentUser ['address']) ? $currentUser ['address'] : "Unknown" ?></p>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Postal Code</label>
-                                                <p><?=($currentUser ['postal_code']) ? $currentUser ['postal_code'] : "Unknown" ?></p>
-                                            </div>
-                                        </div>
+
                                     </div>
+
                                 <?php if($currentUser ['type']='fisher'):?>
                                     <label>Species Owned</label>
                                 <?php else: ?>
@@ -141,12 +155,18 @@ require_once "includes/head.php";
                                         for($i=0 ; $i<50 ;$i++):
                                             if(!empty($skills[$i])):
                                                 ?>
-                                                <span class="button"><?=$skills[$i]?></span>
+                                                <span class="label label-success">
+                                                    <?php
+                                                        echo ucwords($skills[$i]);
+                                                    ?>
+                                                </span>
+                                            &nbsp;
                                             <?php endif;  ?>
                                         <?php endfor;  ?>
                                     <?php else: ?>
                                         <p>Unknown</p>
                                 <?php endif; ?>
+                                <br><br><br><br>
                                     <div class="clearfix"></div>
 
                                     <?php if(isset($_REQUEST['success'])): ?>
@@ -159,31 +179,51 @@ require_once "includes/head.php";
                                         </div>
                                     <?php endif; ?>
                                 <?php
+                                 //0-request pending   1-connected  2-not friends
                                     //Check if invite already sent
-                                    $resultSet = mysqli_query($connection, "SELECT status from invites WHERE sender_id='{$_SESSION['id']}' AND reciepient_id='$id'");
+                                    $resultSet = mysqli_query($connection, "
+                                            SELECT * from invites WHERE (sender_id='{$loggedInUser['id']}' 
+                                             OR sender_id='$id' ) 
+                                            AND (reciepient_id='$id' OR reciepient_id='{$loggedInUser['id']}')"
+                                    );
+
                                     if(mysqli_num_rows($resultSet)>0){
-                                        $status= mysqli_fetch_array($resultSet);
-                                        $status = array_shift($status);
-                                        if($status)
-                                            $status=1;
-                                        else
-                                            $status=0;
-                                    }else{
+                                        $statusSet= mysqli_fetch_array($resultSet);
+                                        $status = $statusSet['status'];
+                                        $sender = $statusSet['sender_id'];
+                                    }
+                                    else{
                                         $status=2;
                                     }
+
                                 ?>
                                 <div class="text-center">
                                     <?php if($result): ?>
                                         <?php if($status==2): ?>
                                             <form action="<?=$_SERVER['PHP_SELF']?>" method="post">
                                                 <input type="hidden" name="reciepient_id" value="<?=$id?>" >
-                                                <button name="submit" type="submit" class="btn btn-default btn-fill" >Proceed to Invite</button>
+                                                <button name="submit" type="submit" class="btn btn-info btn-fill" >Proceed to Invite</button>
                                             </form>
-                                        <?php else: ?>
-                                            <button name="submit" type="submit" class="btn btn-success btn-fill" >Invite Sent</button>
-                                        <?php endif; ?>
+                                        <?php
+
+                                        elseif($status==1): ?>
+                                            <button name="submit" type="submit" class="btn btn-success btn-fill" >Connected</button>
+
+                                        <?php
+
+                                        elseif($status==0): ?>
+
+                                            <?php if($sender==$loggedInUser['id']): ?>
+                                                <button name="submit" type="submit" class="btn btn-warning btn-fill" >Request Pending</button>
+                                            <?php endif; ?>
+
+                                        <?php
+
+                                        endif;
+                                    ?>
+
                                     <?php else: ?>
-                                            <button name="submit" type="submit" class="btn btn-info btn-fill">Cannot Invite No Connection Found</button>
+                                            <button name="submit" type="submit" class="btn btn-danger btn-fill">Cannot Invite No Connection Found</button>
                                     <?php endif;  ?>
                                 </div>
                             </div>
@@ -211,7 +251,11 @@ require_once "includes/head.php";
                                     <?=$currentUser ['about_me']?>
                                 </p>
                                 <p class="description text-center">
-                                    <strong>Role:&nbsp;<?=ucwords($currentUser['user_type'])?></strong>
+                                    <strong>Role:&nbsp;
+                                        <?php
+                                            echo ($currentUser['user_type']=='fisher') ? ucwords("Expert") : "Researcher" ;
+                                        ?>
+                                    </strong>
                                 </p>
                             </div>
                             <hr>

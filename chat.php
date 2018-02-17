@@ -1,4 +1,18 @@
-<!DOCTYPE html>
+<?php
+require_once "includes/database.php";
+session_start();
+if(empty($_SESSION['username']) || empty($_SESSION['id'])){
+    header("Location: login.php");
+}
+$loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
+if(empty($loggedInUser)){
+    header("Location: login.php");
+}
+//Get connected accepted invites
+$contactsResult = mysqli_query($connection,"SELECT * FROM invites WHERE status='1' AND (sender_id='{$_SESSION['id']}' OR reciepient_id='{$_SESSION['id']}' )");
+$numberOfContacts = mysqli_num_rows($contactsResult);
+
+?>
 <html>
 <head>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
@@ -7,20 +21,7 @@
     <link rel="stylesheet" href="assets/jGrowl-master/jquery.jgrowl.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
 </head>
-<?php
-require_once "includes/database.php";
-if(empty($_SESSION['username']) || empty($_SESSION['id'])){
-    header("location: login.php");
-}
-$loggedInUser = mysqli_fetch_array(mysqli_query($connection,"SELECT * from users WHERE id='{$_SESSION['id']}'" ));
-if(empty($loggedInUser)){
-    header("location: login.php");
-}
-//Get connected accepted invites
-$contactsResult = mysqli_query($connection,"SELECT * FROM invites WHERE status='1' AND (sender_id='{$_SESSION['id']}' OR reciepient_id='{$_SESSION['id']}' )");
-$numberOfContacts = mysqli_num_rows($contactsResult);
 
-?>
 <script src="assets/js/jquery.3.2.1.min.js"></script>
 <script src="assets/js/timeago.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
@@ -159,18 +160,34 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
             group: 'alert-' + alertType,
             life: 5000
         });
+    }
 
-        /*for (var i=0; i<10; i++) {
-            setTimeout(function(){
-                var alertType = alertTypes[Math.floor(Math.random()*alertTypes.length)];
-                $('#jGrowl-container1').jGrowl({
-                    header: alertType.substring(0, 1).toUpperCase() + alertType.substring(1) + ' Notification',
-                    message: 'Hello world ',
-                    group: 'alert-' + alertType,
-                    life: 5000
-                });
-            }, i*2000);
-        }*/
+    function allNotification() {
+        $.ajax({
+            type: "POST",
+            url: "getNotificationMessages.php",
+            success: function (response) {
+                var alertTypes = ['success', 'info', 'warning', 'danger'];
+                var alertType = alertTypes[1];
+                response =JSON.parse(response);
+                var len = response.length;
+                for (var i=0; i<len; i++) {
+                    var userName     = response[i]['username'];
+                    var message      = response[i]['message'];
+                    setTimeout(function(){
+                        $('#jGrowl-container1').jGrowl({
+                            header:  userName +' says \n ',
+                            message: message ,
+                            group: 'alert-' + alertType,
+                            life: 3000
+                        });
+                    }, i*2000);
+                }
+            },
+            error: function () {
+            }
+        });
+
     }
 
     function formatDate(date) {
@@ -187,7 +204,6 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
 
         return day + ' ' + monthNames[monthIndex] + ' ' + year;
     }
-
 
 
     function updateMessageUI(response) {
@@ -216,6 +232,7 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
     }
 
     $(document).ready(function() {
+        //get Recent Messages
         window.setInterval(function () {
             var activeChatUser = $('#receiver_id').val();
             var lastMsgId = $('#messages-list li:last-child').attr("id");
@@ -236,12 +253,11 @@ $numberOfContacts = mysqli_num_rows($contactsResult);
                     }
                 });
             }
-        },5000)
-    });
-
-    $(document).ready(function() {
+        },5000);
         //Update every 30 seconds
         window.setInterval('updateSideBarInfo()', 30000);
+        //Check for generic notification every thirty seconds
+        window.setInterval('allNotification()',30000);
     });
 
     function updateSideBarInfo(){
