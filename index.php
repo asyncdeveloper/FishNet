@@ -13,38 +13,57 @@
 </head>
 <script src="assets/js/jquery.3.2.1.min.js"></script>
 <style>
-  tr{
-    min-height: 2000px;
+  div{
+    margin-bottom: 10px;
   }
 </style>
 <script>
+  var dots = window.setInterval( function() {
+    var wait = document.getElementById("wait");
+    if(document.getElementById("wait") == null){
+      clearInterval(dots);
+    }
+    if ( wait.innerHTML.length > 3 ) 
+        wait.innerHTML = "";
+    else 
+        wait.innerHTML += ".";
+    }, 1500);
+  let arrayOfResult;
+  fetch("https://fishbase.ropensci.org/species?limit=1000")
+        .then(res => res.json())
+        .then(res => {
+          arrayOfResult = res.data;
+          console.log("response is back!");
+          for (ress of res.data) {
+            if (ress.FBname == null) {
+              continue;
+            } else {
+              document.getElementById("fishes").innerHTML +=
+                `<option>${
+                ress.FBname
+              }</option>`;
+            }
+          }
+          console.log("done");
+          document.getElementById('infoMessage').innerHTML = "Done! , Now you can search";
+        })
+        .catch(err => {
+          console.log(err);
+        });
     function searchForSpecie(){
-        var result = document.getElementById('searchName').value;
+        var query = document.getElementById('searchName').value;
         $('#hideThis').css('display', 'none');
         $('#displaySearchResult').css('display', 'block');
-
-        $.ajax({
-            type: "POST",
-            url: "getSpecie.php",
-            data: {name : result},
-            success: function (response) {
-                response =JSON.parse(response);
-                console.log(response);
-                var len = response.length;
-                for( var i = 0; i<len; i++){
-                    // document.getElementById('name').innerHTML = response[i]['name'];
-                    document.getElementById('name2').innerHTML = response[i]['name'];
-                    document.getElementById('comments').innerHTML= response[i]['comment'];
-                    document.getElementById('dangerous').innerHTML= response[i]['dangerous'];
-                    document.getElementById('genius').innerHTML= response[i]['genus'];
-                    document.getElementById('species').innerHTML = response[i]['species'];
-                    document.getElementById('usedForAquaculture').innerHTML = response[i]['UsedforAquaculture'];
-                    // console.log(name,importance);
-                }
-            },
-            error: function () {
-            }
-        });
+        let result = arrayOfResult.filter(x => x.FBname == query);
+        document.getElementById('name').innerHTML = result[0].FBname;
+        document.getElementById('comments').innerHTML= result[0].Comments;
+        document.getElementById('genius').innerHTML= result[0].Genus;
+        document.getElementById('specie').innerHTML = result[0].Species;
+        document.getElementById('length').innerHTML = result[0].Length;
+        document.getElementById('dangerous').innerHTML= result[0].Dangerous;
+        document.getElementById('ability').innerHTML = result[0].Electrogenic;
+        document.getElementById('usedAsBait').innerHTML = result[0].UsedasBait;
+        document.getElementById('usedForAquaculture').innerHTML = result[0].UsedforAquaculture;
     }
 </script>
 <body>
@@ -89,18 +108,15 @@
       </nav>
       <div class="row">
         <div class="col-md-12">
-
-          <!--welcome-message-->
           <header class="welcome-message text-center">
-            <h1><span id="infoMessage" class="rotate">We Are Here to Help, Search For Your Preferred Fish</span></h1>
+            <h1 id="infoMessage"><span>Please wait while we Get Species data.</span><span id="wait">.</span></h1>
           </header>
-          <!--welcome-message end-->
-          <!--sub-form-->
           <div class="sub-form text-center">
             <div class="row" ng-app>
               <div class="col-md-5 center-block col-sm-8 col-xs-11">
                   <div class="input-group">
-                    <input type="text" ng-model="name" id="searchName" class="form-control" placeholder="Name">
+                    <input type="text" ng-model="name" list="fishes" id="searchName" class="form-control" placeholder="Name">
+                    <datalist id="fishes"></datalist>
                     <span class="input-group-btn">
                     <button type="submit" class="btn btn-default" value="Search" name="search" onclick="searchForSpecie()">
                         Search
@@ -131,7 +147,7 @@
                     <strong>Name</strong>
                   </div>
                   <div class="col-md-8">
-                    <p id="name2"></p>
+                    <p id="name"></p>
                   </div>
                 </div>
                 <div class="row">
@@ -152,7 +168,23 @@
                 </div>
                 <div class="row">
                   <div class="col-md-4">
-                    <strong>Dangerous</strong>
+                    <strong>Specie</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="specie"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Length</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="length"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Dangerous Status</strong>
                   </div>
                   <div class="col-md-8">
                     <p id="dangerous"></p>
@@ -160,10 +192,18 @@
                 </div>
                 <div class="row">
                   <div class="col-md-4">
-                    <strong>Species</strong>
+                    <strong>Abilities</strong>
                   </div>
                   <div class="col-md-8">
-                    <p id="species"></p>
+                    <p id="ability"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Used As Bait</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="usedAsBait"></p>
                   </div>
                 </div>
                 <div class="row">
