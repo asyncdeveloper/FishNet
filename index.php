@@ -12,6 +12,11 @@
 <link href="assets/css/main.css" rel="stylesheet">
 </head>
 <script src="assets/js/jquery.3.2.1.min.js"></script>
+<style>
+  tr{
+    min-height: 2000px;
+  }
+</style>
 <script>
     function searchForSpecie(){
         var result = document.getElementById('searchName').value;
@@ -27,16 +32,14 @@
                 console.log(response);
                 var len = response.length;
                 for( var i = 0; i<len; i++){
-                    var id          = response[i]['id'];
-                    var name        = response[i]['name'];
-                    var importance  = response[i]['importance'];
-                    var comment     = response[i]['comment'];
-                    var dang        = response[i]['dangerous'];
-                    var genus       = response[i]['genus'];
-                    var imageId     = response[i]['images'];
-                    var species     = response[i]['species'];
-                    var aqua        = response[i]['UsedforAquaculture'];
-                    //console.log(name,importance);
+                    // document.getElementById('name').innerHTML = response[i]['name'];
+                    document.getElementById('name2').innerHTML = response[i]['name'];
+                    document.getElementById('comments').innerHTML= response[i]['comment'];
+                    document.getElementById('dangerous').innerHTML= response[i]['dangerous'];
+                    document.getElementById('genius').innerHTML= response[i]['genus'];
+                    document.getElementById('species').innerHTML = response[i]['species'];
+                    document.getElementById('usedForAquaculture').innerHTML = response[i]['UsedforAquaculture'];
+                    // console.log(name,importance);
                 }
             },
             error: function () {
@@ -63,16 +66,16 @@
           <!-- <div> -->
             <ul class="nav navbar-nav  navbar-right">
                 <?php
-                    require_once "includes/database.php";
-                    session_start();
-                    if(!isset($_SESSION['id'])):
+                require_once "includes/database.php";
+                session_start();
+                if (!isset($_SESSION['id'])) :
                 ?>
                           <li><a href="register.php"><span class="glyphicon glyphicon-user"></span> <strong>Sign Up</strong> </a></li>
                           <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span><strong> Login</strong></a></li>
-                    <?php else: ?>
+                    <?php else : ?>
                         <li>
                             <a href="dashboard.php"><span class="glyphicon glyphicon-user"></span>
-                                <strong><?=ucwords($_SESSION['username'])?></strong> </a>
+                                <strong><?= ucwords($_SESSION['username']) ?></strong> </a>
                         </li>
                         <li>
                             <a href="logout.php"><span class="glyphicon glyphicon-log-out"></span>
@@ -89,15 +92,13 @@
 
           <!--welcome-message-->
           <header class="welcome-message text-center">
-            <h1><span class="rotate">We Are Here to Help, Search For Your Preferred Fish</span></h1>
+            <h1><span id="infoMessage" class="rotate">We Are Here to Help, Search For Your Preferred Fish</span></h1>
           </header>
           <!--welcome-message end-->
-
           <!--sub-form-->
           <div class="sub-form text-center">
             <div class="row" ng-app>
               <div class="col-md-5 center-block col-sm-8 col-xs-11">
-                <form>
                   <div class="input-group">
                     <input type="text" ng-model="name" id="searchName" class="form-control" placeholder="Name">
                     <span class="input-group-btn">
@@ -108,7 +109,6 @@
                         </i>
                     </button>
                     </span> </div>
-                </form>
                 <p id="angular-component" class="alert">I am looking for {{name}}</p>
               </div>
             </div>
@@ -127,36 +127,51 @@
               <div id="displaySearchResult" class="textBig" style="display: none;">
                 <h2 class="text-center">Result</h2>
                 <div class="row">
-                  <div class="col-md-12">
-                    <h1 id="name"></h1>
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td>Name</td>
-                          <td id="name"></td>
-                        </tr>
-                        <tr>
-                          <td>Description</td>
-                          <td id="comments"></td>
-                        </tr>
-                        <tr>
-                          <td>Genius</td>
-                          <td id="genius"></td>
-                        </tr>
-                        <tr>
-                          <td>Dangerous</td>
-                          <td id="dangerous"></td>
-                        </tr>
-                        <tr>
-                          <td>Species</td>
-                          <td id="species"></td>
-                        </tr>
-                        <tr>
-                          <td>Used For Aquaculture</td>
-                          <td id="usedForAquaculture"></td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <div class="col-md-4">
+                    <strong>Name</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="name2"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Description</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="comments"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Genius</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="genius"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Dangerous</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="dangerous"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Species</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="species"></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Used for Aquaculture</strong>
+                  </div>
+                  <div class="col-md-8">
+                    <p id="usedForAquaculture"></p>
                   </div>
                 </div>
               </div>
@@ -188,7 +203,7 @@
               	  </div>
               </div>
 
-              </div>
+            </div>
           </section>
 
           <!--Fishes collection end-->
